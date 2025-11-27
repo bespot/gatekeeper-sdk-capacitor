@@ -1,4 +1,4 @@
-package com.bespot.gatekeepercapacitorplugin;
+package com.bespot.gatekeepersdkcapacitorplugin;
 
 import com.getcapacitor.Logger;
 
