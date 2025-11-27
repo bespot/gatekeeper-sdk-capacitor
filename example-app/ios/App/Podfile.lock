@@ -1,0 +1,28 @@
+PODS:
+  - Capacitor (7.0.0):
+    - CapacitorCordova
+  - CapacitorCordova (7.0.0)
+  - GatekeeperSdkCapacitor (0.0.1):
+    - Capacitor
+
+DEPENDENCIES:
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - GatekeeperSdkCapacitor (from `../../..`)
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  GatekeeperSdkCapacitor:
+    :path: "../../.."
+
+SPEC CHECKSUMS:
+  Capacitor: 82d1f3b4480d66b5996814f74500dcbc0908558c
+  CapacitorCordova: 345f93b7edd121db98e4ec20ac94d6d7bcaf7e48
+  GatekeeperSdkCapacitor: 4f4057a8ce0c2273b28871b537779aa401671ee9
+
+PODFILE CHECKSUM: 4ec5eb45bdd06f671af78f84f49d68bfd1c6d69e
+
+COCOAPODS: 1.16.2
