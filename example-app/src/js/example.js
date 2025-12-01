@@ -87,13 +87,27 @@ window.customElements.define(
     async connectedCallback() {
       const self = this;
 
-      await SafeSDK.initialize({
-        apiBaseUrl: 'https://antifraud.bespot.dev/v2',
-        apiKey: 'MlKOGseZ5t1zf32YVs9JR216wvtW7jGE94xMJ5LQ',
-        authTokenUrl: 'https://antifraud.auth.eu-west-1.amazoncognito.com/oauth2/token',
-        clientId: '7n5n65e9uelidgneo31qs7t1hi',
-        clientSecret: '1aph1feftr3ll4asqbpesi9i7ov531o0li7591rgqah2ner05edc',
-        params: { debugLoggingEnabled: true },
+      try {
+        await SafeSDK.initialize({
+          apiBaseUrl: 'https://antifraud.bespot.dev/v2',
+          apiKey: 'MlKOGseZ5t1zf32YVs9JR216wvtW7jGE94xMJ5LQ',
+          authTokenUrl: 'https://antifraud.auth.eu-west-1.amazoncognito.com/oauth2/token',
+          clientId: '7n5n65e9uelidgneo31qs7t1hi',
+          clientSecret: '1aph1feftr3ll4asqbpesi9i7ov531o0li7591rgqah2ner05edc',
+          params: { debugLoggingEnabled: true },
+        });
+      } catch (err) {
+        console.error('SafeSDK.initialize failed', err);
+      }
+
+      const subscribeButton = this.shadowRoot.getElementById('Subscribe');
+      subscribeButton.addEventListener('click', async () => {
+        try {
+          const { action } = await SafeSDK.subscribe();
+          console.log('Subscribe action:', action.type, action.signature);
+        } catch (err) {
+          console.error('SafeSDK.subscribe failed', err);
+        }
       });
     }
   },

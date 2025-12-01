@@ -1,5 +1,6 @@
 import Foundation
 import Capacitor
+import AntifraudSDK
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -11,18 +12,45 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "SafeSDK"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
     @objc func initialize(_ call: CAPPluginCall) {
-        guard let apiBaseUrl = call.getString("apiBaseUrl"), let apiKey = call.getString("apiKey"), let authTokenUrl = call.getString("authTokenUrl"), let clientId = call.getString("clientId"), let clientSecret = call.getString("clientSecret"), let params = call.getObject("params") as? [String: Any] else {
+        guard let apiBaseUrl = call.getString("apiBaseUrl"), let apiKey = call.getString("apiKey"), let authTokenUrl = call.getString("authTokenUrl"), let clientId = call.getString("clientId"), let clientSecret = call.getString("clientSecret") else {
             call.reject("Missing required initialize parameters")
             return
         }
 
-        implementation.initialize(apiBaseUrl: apiBaseUrl, apiKey: apiKey, authTokenUrl: authTokenUrl, clientId: clientId, clientSecret: clientSecret, params: params)
+        let params = call.getObject("params") as? [String: Any]
+
+        implementation.initialize(
+            apiBaseUrl: apiBaseUrl,
+            apiKey: apiKey,
+            authTokenUrl: authTokenUrl,
+            clientId: clientId,
+            clientSecret: clientSecret,
+            params: params
+        )
         call.resolve()
+    }
+
+    @objc func subscribe(_ call: CAPPluginCall) {
+        implementation.subscribe { result in
+            switch result {
+            case .success(let action):
+                let actionDict: [String: Any] = [
+                    "type": String(describing: action.actionType),
+                    "signature": action.signature
+                ]
+                call.resolve(["action": actionDict])
+            case .failure(let error):
+                let code = error.rawValue
+                let message = "SafeSDK subscribe failed: \(code)"
+                call.reject(message, code, nil)
+            }
+        }
     }
 
     @objc func echo(_ call: CAPPluginCall) {
@@ -32,3 +60,13 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         ])
     }
 }
+
+//private func mapActionTypeToString(_ type: ActionType) -> String {
+//    switch type {
+//        case .block: return "block"
+//        case .limitAccess: return "limitAccess"
+//        case .monitor: return "monitor"
+//        case .notSafe: return "notSafe"
+//        case .safe: return "safe"
+//    }
+//}
