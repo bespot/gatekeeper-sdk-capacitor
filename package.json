@@ -12,6 +12,7 @@
     "dist/",
     "ios/Sources",
     "ios/Tests",
+    "ios/Frameworks",
     "Package.swift",
     "GatekeeperSdkCapacitor.podspec"
   ],
