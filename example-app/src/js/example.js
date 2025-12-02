@@ -74,6 +74,13 @@ window.customElements.define(
           <button class="button" id="Unsubscribe" style="background-color: #FA120A; color: white;">Unsubscribe</button>
         </div>
         <p>
+        <div class="buttons-row">
+          <button class="button" id="UserId 1" style="background-color: #808080; color: white;">UserId 1</button>
+          <button class="button" id="UserId 2" style="background-color: #808080; color: white;">UserId 2</button>
+          <button class="button" id="UserId 3" style="background-color: #808080; color: white;">UserId 3</button>
+        </div>
+        </p>
+        <p>
           <button class="button" id="Ask for permissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%">Ask for permissions</button>
         </p>
         <p>
