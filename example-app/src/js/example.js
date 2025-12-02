@@ -109,6 +109,15 @@ window.customElements.define(
           console.error('SafeSDK.subscribe failed', err);
         }
       });
+      const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');
+      unsubscribeButton.addEventListener('Click', async () => {
+        try {
+          await SafeSDK.unsubscribe();
+          console.log('SafeSDK.unsubscribe is done!');
+        } catch (err) {
+          console.error('SafeSDK.subscribe failed', err);
+        }
+      });
     }
   },
 );

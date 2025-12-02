@@ -16,6 +16,10 @@ import AntifraudSDK
         }
     }
 
+    func unsubscribe() {
+        AntifraudSDK.SafeSDK.sharedSafeSDK.unsubscribe()
+    }
+
     @objc public func echo(_ value: String) -> String {
         print(value)
         return value

@@ -13,7 +13,8 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
@@ -51,6 +52,11 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
                 call.reject(message, code, nil)
             }
         }
+    }
+
+    @objc func unsuscribe(_ call: CAPPluginCall) {
+        implementation.unsubscribe()
+        call.resolve()
     }
 
     @objc func echo(_ call: CAPPluginCall) {
