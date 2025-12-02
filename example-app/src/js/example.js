@@ -109,6 +109,15 @@ window.customElements.define(
           console.error('SafeSDK.subscribe failed', err);
         }
       });
+      const checkButton = this.shadowRoot.getElementById('Check Now');
+      checkButton.addEventListener('click', async () => {
+        try {
+          const { action } = await SafeSDK.check();
+          console.log('Check action:', action.type, action.signature);
+        } catch (err) {
+          console.error('SafeSDK.check failed', err);
+        }
+      });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');
       unsubscribeButton.addEventListener('Click', async () => {
         try {

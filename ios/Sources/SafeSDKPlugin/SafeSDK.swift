@@ -16,6 +16,14 @@ import AntifraudSDK
         }
     }
 
+    public func check(_ checkCompletion: @escaping (Result<Action, SDKError>) -> Void) {
+        AntifraudSDK.SafeSDK.sharedSafeSDK.check { result in
+            DispatchQueue.main.async {
+                checkCompletion(result)
+            }
+        }
+    }
+
     func unsubscribe() {
         AntifraudSDK.SafeSDK.sharedSafeSDK.unsubscribe()
     }

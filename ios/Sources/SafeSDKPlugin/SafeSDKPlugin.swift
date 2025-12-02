@@ -14,7 +14,8 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
@@ -49,6 +50,23 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
             case .failure(let error):
                 let code = error.rawValue
                 let message = "SafeSDK subscribe failed: \(code)"
+                call.reject(message, code, nil)
+            }
+        }
+    }
+
+    @objc func check(_ call: CAPPluginCall) {
+        implementation.check { result in
+            switch result {
+            case .success(let action):
+                let actionDict: [String: Any] = [
+                    "type": String(describing: action.actionType),
+                    "signature": action.signature
+                ]
+                call.resolve(["action": actionDict])
+            case .failure(let error):
+                let code = error.rawValue
+                let message = "SafeSDK check failed: \(code)"
                 call.reject(message, code, nil)
             }
         }
