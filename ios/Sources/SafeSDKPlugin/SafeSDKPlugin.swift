@@ -15,7 +15,8 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
@@ -72,8 +73,17 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
-    @objc func unsuscribe(_ call: CAPPluginCall) {
+    @objc func unsubscribe(_ call: CAPPluginCall) {
         implementation.unsubscribe()
+        call.resolve()
+    }
+
+    @objc func setUserId(_ call: CAPPluginCall) {
+        guard let userId = call.getString("userId") else {
+            call.reject("Missing required userId parameter")
+            return
+        }
+        implementation.setUserId(userId)
         call.resolve()
     }
 

@@ -92,8 +92,6 @@ window.customElements.define(
     }
 
     async connectedCallback() {
-      const self = this;
-
       try {
         await SafeSDK.initialize({
           apiBaseUrl: 'https://antifraud.bespot.dev/v2',
@@ -106,6 +104,27 @@ window.customElements.define(
       } catch (err) {
         console.error('SafeSDK.initialize failed', err);
       }
+
+      const userId1Button = this.shadowRoot.getElementById('UserId 1');
+      const userId2Button = this.shadowRoot.getElementById('UserId 2');
+      const userId3Button = this.shadowRoot.getElementById('UserId 3');
+
+      const registerUserIdButton = (button) => {
+        if (!button) return;
+        button.addEventListener('click', async () => {
+          const userId = button.textContent.trim();
+          try {
+            await SafeSDK.setUserId({ userId });
+            console.log('Set userId to:', userId);
+          } catch (err) {
+            console.error('SafeSDK.setUserId failed', err);
+          }
+        });
+      };
+
+      registerUserIdButton(userId1Button);
+      registerUserIdButton(userId2Button);
+      registerUserIdButton(userId3Button);
 
       const subscribeButton = this.shadowRoot.getElementById('Subscribe');
       subscribeButton.addEventListener('click', async () => {
@@ -126,7 +145,7 @@ window.customElements.define(
         }
       });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');
-      unsubscribeButton.addEventListener('Click', async () => {
+      unsubscribeButton.addEventListener('click', async () => {
         try {
           await SafeSDK.unsubscribe();
           console.log('SafeSDK.unsubscribe is done!');

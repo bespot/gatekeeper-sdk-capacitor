@@ -24,8 +24,12 @@ import AntifraudSDK
         }
     }
 
-    func unsubscribe() {
+    public func unsubscribe() {
         AntifraudSDK.SafeSDK.sharedSafeSDK.unsubscribe()
+    }
+
+    public func setUserId(_ userId: String) {
+        AntifraudSDK.SafeSDK.sharedSafeSDK.setUserId(userId)
     }
 
     @objc public func echo(_ value: String) -> String {
