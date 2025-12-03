@@ -1,6 +1,7 @@
 import Foundation
 import Capacitor
 import AntifraudSDK
+import CoreLocation
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -8,6 +9,7 @@ import AntifraudSDK
  */
 @objc(SafeSDKPlugin)
 public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
+    private var locationManager: CLLocationManager?
     public let identifier = "SafeSDKPlugin"
     public let jsName = "SafeSDK"
     public let pluginMethods: [CAPPluginMethod] = [
@@ -16,7 +18,8 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "askForPermissions", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
@@ -84,6 +87,13 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         implementation.setUserId(userId)
+        call.resolve()
+    }
+
+    @objc func askForPermissions(_ call: CAPPluginCall) {
+        self.locationManager = CLLocationManager()
+        self.locationManager?.requestWhenInUseAuthorization()
+
         call.resolve()
     }
 

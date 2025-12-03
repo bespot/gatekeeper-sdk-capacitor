@@ -126,6 +126,17 @@ window.customElements.define(
       registerUserIdButton(userId2Button);
       registerUserIdButton(userId3Button);
 
+      const askForPermissionsButton = this.shadowRoot.getElementById('Ask for permissions');
+
+      askForPermissionsButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.askForPermissions();
+          console.log('Permissions requested');
+        } catch (err) {
+          console.error('SafeSDK.askForPermissions failed', err);
+        }
+      });
+
       const subscribeButton = this.shadowRoot.getElementById('Subscribe');
       subscribeButton.addEventListener('click', async () => {
         try {

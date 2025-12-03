@@ -24,4 +24,7 @@ export class SafeSDKWeb extends WebPlugin implements SafeSDKPlugin {
   async setUserId(options: { userId: string }): Promise<void> {
     console.warn('SafeSDK.setUserId is not implemented on web', options);
   }
+  async askForPermissions(): Promise<void> {
+    console.warn('SafeSDK.askForPermissions is not implemented on web');
+  }
 }

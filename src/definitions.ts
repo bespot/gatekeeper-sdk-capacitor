@@ -5,6 +5,7 @@ export interface SafeSDKPlugin {
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
+  askForPermissions(): Promise<void>;
 }
 
 export interface InitializeOptions {
