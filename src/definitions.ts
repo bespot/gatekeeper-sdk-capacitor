@@ -1,5 +1,4 @@
 export interface SafeSDKPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
   initialize(options: InitializeOptions): Promise<void>;
   subscribe(): Promise<{ action: Action }>;
   check(): Promise<{ action: Action }>;

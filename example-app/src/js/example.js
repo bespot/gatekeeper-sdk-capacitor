@@ -67,6 +67,9 @@ window.customElements.define(
       </capacitor-welcome-titlebar>
       <main>
         <p>
+          <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
+        </p>
+        <p>
           <button class="button" id="Check Now" style="background-color: #007BFF; color: white; display: block; width: 100%">Check Now</button>
         </p>
         <div class="buttons-row">
@@ -92,18 +95,22 @@ window.customElements.define(
     }
 
     async connectedCallback() {
-      try {
-        await SafeSDK.initialize({
-          apiBaseUrl: 'https://antifraud.bespot.dev/v2',
-          apiKey: 'MlKOGseZ5t1zf32YVs9JR216wvtW7jGE94xMJ5LQ',
-          authTokenUrl: 'https://antifraud.auth.eu-west-1.amazoncognito.com/oauth2/token',
-          clientId: '7n5n65e9uelidgneo31qs7t1hi',
-          clientSecret: '1aph1feftr3ll4asqbpesi9i7ov531o0li7591rgqah2ner05edc',
-          params: { debugLoggingEnabled: true },
-        });
-      } catch (err) {
-        console.error('SafeSDK.initialize failed', err);
-      }
+      const initializeButton = this.shadowRoot.getElementById('Initialize');
+      initializeButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.initialize({
+            apiBaseUrl: 'https://antifraud.bespot.dev/v2',
+            apiKey: 'MlKOGseZ5t1zf32YVs9JR216wvtW7jGE94xMJ5LQ',
+            authTokenUrl: 'https://antifraud.auth.eu-west-1.amazoncognito.com/oauth2/token',
+            clientId: '7n5n65e9uelidgneo31qs7t1hi',
+            clientSecret: '1aph1feftr3ll4asqbpesi9i7ov531o0li7591rgqah2ner05edc',
+            params: { debugLoggingEnabled: true },
+          });
+          console.log('Initialized done');
+        } catch (err) {
+          console.error('SafeSDK.initialize failed', err);
+        }
+      });
 
       const userId1Button = this.shadowRoot.getElementById('UserId 1');
       const userId2Button = this.shadowRoot.getElementById('UserId 2');

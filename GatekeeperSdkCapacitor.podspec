@@ -16,3 +16,4 @@ Pod::Spec.new do |s|
   s.dependency 'AntifraudSDK'
   s.swift_version = '5.1'
 end
+ 

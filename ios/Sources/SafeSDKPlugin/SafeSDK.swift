@@ -8,7 +8,7 @@ import AntifraudSDK
 
     }
 
-    public func subscribe(_ completion: @escaping (Result<Action, SDKError>) -> Void) -> Void {
+    public func subscribe(_ completion: @escaping (Result<Action, SDKError>) -> Void) {
         AntifraudSDK.SafeSDK.sharedSafeSDK.subscribe { result in
             DispatchQueue.main.async {
                 completion(result)
@@ -30,10 +30,5 @@ import AntifraudSDK
 
     public func setUserId(_ userId: String) {
         AntifraudSDK.SafeSDK.sharedSafeSDK.setUserId(userId)
-    }
-
-    @objc public func echo(_ value: String) -> String {
-        print(value)
-        return value
     }
 }
