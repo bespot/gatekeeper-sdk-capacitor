@@ -1,33 +1,38 @@
+# Bespot Gatekeeper Capacitor Plugin
 
+## Intro to Gatekeeper
 Bespot Gatekeeper is a highly customizable fraud prevention and geolocation verification platform for mobile and web applications. It verifies user locations, detects device integrity issues, and monitors network connections to help organizations—particularly in the iGaming, Media Streaming, and Financial Services industries—comply with regulations and protect digital transactions from fraud.
 
 ## Features
 
 See our [documentation](https://gatekeeper.docs.bespot.com/overview/features/) for an up-to-date list of fraud detections available across platforms.
 
+# Installation
+
+To install the `gatekeeper-sdk-capacitor` plugin in your Ionic/JavaScript project do the following:
+
+1. From the root of your Ionic/Javascript app run:
+```
+npm install git+https://github.com/bespot/gatekeeper-sdk-capacitor.git
+```
+
+2. Sync Capacitor:
+```
+npx cap sync ios
+```
+
+# Capacitor for iOS
+
 ## Requirements
 
 - iOS 15.0+
 - Xcode 16
 
-# How to install the iOS `gatekeeper-sdk-capacitor` plugin in your Ionic/JavaScript project
+## Install with CocoaPods
 
-From the root of your Ionic/Javascript app run
-```
-npm install git+https://github.com/bespot/gatekeeper-sdk-capacitor.git
-```
+1. From your app root, edit the `Podfile` so it contains the `GatekeeperSdkCapacitor` and the `AntifraudSDK` pods as follows:
 
-Then sync Capacitor:
-```
-npx cap sync ios 
-```
-
-# iOS Setup
-
-## Podfile
-
-From your app root, edit `Podfile` so it contains:
-```
+```ruby
 require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 
 platform :ios, '15.0'
@@ -45,7 +50,7 @@ def capacitor_pods
   pod 'AntifraudSDK', :git => 'https://github.com/bespot/antifraud-sdk-ios-release', :tag => '1.1.3'
 end
 
-target 'App' do
+target 'YourApp' do
   capacitor_pods
   # Add your Pods here
 end
@@ -54,34 +59,38 @@ post_install do |installer|
   assertDeploymentTarget(installer)
 end
 ```
-Then execute:
-```
+
+2. Run on your terminal:
+
+```shell
 pod install
 ```
 
-### Info.plist (location permission)
+## Permissions
+
 SafeSDK requires access to **Location Services**. Add the following to your app's `Info.plist`:
-```
+```xml
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Your location is required for fraud-prevention analysis.</string>
 ```
 
-## JavaScript/Ionic Usage 
-### Import
+## Import
 In your app code (TypeScript or JavaScript):
-```
+```TypeScript
 import { SafeSDK } from 'gatekeeper-sdk-capacitor';
 ```
-### API:
-- `initialize(options: InitializeOptions): Promise<void>`
-- `check(): Promise<{ action: Action }>`
-- `subscribe(): Promise<{ action: Action }>`
-- `unsubscribe(): Promise<void>`
-- `setUserId(options: { userId: string }): Promise<void>`
-- `askForPermissions(): Promise<void>` (helper for location permission, if implemented)
 
-### Model:
-```
+## API
+The following methods are available:
+- `askForPermissions(): Promise<void>` (optional, required for location aware fraud checks)
+- `initialize(options: InitializeOptions): Promise<void>` (required for the SDK to function)
+- `setUserId(options: { userId: string }): Promise<void>` (optional)
+- `check(): Promise<{ action: Action }>` (optional, required for on-demand fraud checks)
+- `subscribe(): Promise<{ action: Action }>` (optional, required for periodic fraud checks)
+- `unsubscribe(): Promise<void>` (optional, required for periodic fraud checks)
+
+## Model
+```TypeScript
 export type ActionType =
   | 'block'
   | 'limitAccess'
@@ -94,18 +103,18 @@ export interface Action {
   signature: string;
 }
 ```
+
+## Usage
+
 ### Ask for location permission
+Request user location permission to enable location aware fraud checks:
+```TypeScript
+await SafeSDK.askForPermissions();
 ```
-try {
-  await SafeSDK.askForPermissions();
-  console.log('Permissions requested');
-} catch (err) {
-  console.error('SafeSDK.askForPermissions failed', err);
-}
-```
-### Initialize the AntifraudSDK 
+
+### Initialize the SafeSDK
 Call **once** early in your app lifecycle:
-```
+```TypeScript
 await SafeSDK.initialize({
     apiBaseUrl: "the_provided_API_base_URL",
     apiKey: "the_provided_API_key",
@@ -114,38 +123,39 @@ await SafeSDK.initialize({
     clientSecret: "the_provided_oauth2_clientsecret",
     params: { debugLoggingEnabled: Bool }, // optional
   });
-}
 ```
-### Identify user (SetUserId)
+
+### Identify user
 After initialization is completed, SafeSDK supports holding a customer/client related unique user identifier which can be provided at any time using the following method:
-```
+```TypeScript
 await SafeSDK.setUserId({ userId });
-console.log('Set userId to:', userId);
-}
 ```
+
 ### On-demand check
 Use the following method to make an informed decision on what action to take in case of detected fraudulent activities by SafeSDK:
-```
+```TypeScript
 try {
   const { action } = await SafeSDK.check();
-  console.log('Check action:', action.type, action.signature);
+  console.log(`Action: ${action.type}, signature: ${action.signature}`);
 } catch (err) {
-  console.error('SafeSDK.check failed', err);
+  console.error(`Check failed with error: ${err}`);
 }
 ```
+
 ### Subscribe to Fraud Detection Updates
 You can now subscribe to continuous fraud detection results using the `subscribe()` method:
-```
+```TypeScript
 try {
   const { action } = await SafeSDK.subscribe();
-  console.log('Subscribe action:', action.type, action.signature);
+  console.log(`Action: ${action.type}, signature: ${action.signature}`);
 } catch (err) {
-  console.error('SafeSDK.subscribe failed', err);
+  console.error(`Subscription failed with error: ${err}`);
 }
 ```
+
 ### Unsubscribe from Fraud Detection Updates
 Terminates the active subscription to fraud detection updates. Use this method when you no longer wish to receive updates from the SDK.
-```
+```TypeScript
 await SafeSDK.unsubscribe();
 ```
 
