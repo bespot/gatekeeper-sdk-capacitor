@@ -67,6 +67,9 @@ window.customElements.define(
       </capacitor-welcome-titlebar>
       <main>
         <p>
+          <button class="button" id="Echo" style="background-color:rgb(255, 217, 0); color: white; display: block; width: 100%">Echo</button>
+        </p>
+        <p>
           <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
         </p>
         <p>
@@ -95,6 +98,13 @@ window.customElements.define(
     }
 
     async connectedCallback() {
+        const echoButton = this.shadowRoot.getElementById('Echo');
+        echoButton.addEventListener('click', async () => {
+            await SafeSDK.echo({
+                value: 'Hello, world!',
+            });
+        });
+
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {

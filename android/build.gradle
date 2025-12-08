@@ -50,6 +50,9 @@ android {
 repositories {
     google()
     mavenCentral()
+    maven { url "https://artifactory.bespot.com/artifactory/bespot-antifraud" }
+    maven { url "https://artifactory.bespot.com/artifactory/bespot-logger" }
+    maven { url "https://jitpack.io" }
 }
 
 
@@ -58,7 +61,10 @@ dependencies {
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation 'androidx.compose.runtime:runtime:1.9.5'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation("com.bespot.antifraud:sdk-android:1.0.1-SNAPSHOT")
+    implementation 'androidx.compose.runtime:runtime:1.9.5'
 }

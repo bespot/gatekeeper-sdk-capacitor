@@ -15,6 +15,11 @@ android {
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
+//        resValue("string", "antifraud_sdk_key", YOUR_API_KEY)
+//        resValue("string", "antifraud_sdk_api_url", API_URL)
+//        resValue("string", "antifraud_sdk_client_id", YOUR_CLIENT_ID)
+//        resValue("string", "antifraud_sdk_client_secret", YOUR_CLIENT_SECRET)
+//        resValue("string", "antifraud_sdk_oauth2_token_url", OAUTH2_TOKEN_URL)
     }
     buildTypes {
         release {
