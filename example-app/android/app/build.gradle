@@ -15,11 +15,15 @@ android {
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
-        resValue("string", "antifraud_sdk_api_key", getLocalPropertyFormatted("DEV_API_KEY"))
-        resValue("string", "antifraud_sdk_api_url", getLocalPropertyFormatted("DEV_API_URL"))
-        resValue("string", "antifraud_sdk_client_id", getLocalPropertyFormatted("DEV_CLIENT_ID"))
-        resValue("string", "antifraud_sdk_client_secret", getLocalPropertyFormatted("DEV_CLIENT_SECRET"))
-        resValue("string", "antifraud_sdk_oauth2_token_url", getLocalPropertyFormatted("DEV_OAUTH2_TOKEN_URL"))
+
+        // Set parameters needed for SafeSDK initialization. Defined in local.properties file
+        resValue("string", "antifraud_sdk_key", getLocalPropertyFormatted("API_KEY"))
+        resValue("string", "antifraud_sdk_api_url", getLocalPropertyFormatted("API_URL"))
+        resValue("string", "antifraud_sdk_client_id", getLocalPropertyFormatted("CLIENT_ID"))
+        resValue("string", "antifraud_sdk_client_secret", getLocalPropertyFormatted("CLIENT_SECRET"))
+        resValue("string", "antifraud_sdk_oauth2_token_url", getLocalPropertyFormatted("OAUTH2_TOKEN_URL"))
+        // Enable remote logging (for Bespot only)
+        resValue("bool", "antifraud_sdk_enable_remote_logs", "true")
     }
     buildTypes {
         release {
