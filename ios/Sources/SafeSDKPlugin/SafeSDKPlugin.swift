@@ -18,7 +18,8 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "askForPermissions", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "askForPermissions", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "enableLogging", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
 
@@ -95,5 +96,9 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     @objc func askForPermissions(_ call: CAPPluginCall) {
         self.locationManager.requestWhenInUseAuthorization()
         call.resolve()
+    }
+
+    @objc func enableLogging(_ call: CAPPluginCall) {
+        call.unimplemented("Not implemented on iOS. Use the `debugLoggingEnabled` boolean parameter in the `initialize(_)` method to enable debug logging")
     }
 }

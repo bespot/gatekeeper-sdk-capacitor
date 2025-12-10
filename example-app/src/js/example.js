@@ -66,6 +66,10 @@ window.customElements.define(
         <h1>Capacitor</h1>
       </capacitor-welcome-titlebar>
       <main>
+        <div class="buttons-row">
+          <button class="button" id="EnableLogging" style="background-color: #28A745; color: white;">Enable Logging</button>
+          <button class="button" id="DisableLogging" style="background-color: #FA120A; color: white;">Disable Logging</button>
+        </div>
         <p>
           <button class="button" id="Echo" style="background-color:rgb(255, 217, 0); color: white; display: block; width: 100%">Echo</button>
         </p>
@@ -105,6 +109,16 @@ window.customElements.define(
             });
         });
 
+      const enableLoggingButton = this.shadowRoot.getElementById('EnableLogging');
+      enableLoggingButton.addEventListener('click', async () => {
+        SafeSDK.enableLogging({ debugLoggingEnabled: true });
+      });
+
+      const disableLoggingButton = this.shadowRoot.getElementById('DisableLogging');
+      disableLoggingButton.addEventListener('click', async () => {
+        SafeSDK.enableLogging({ debugLoggingEnabled: false });
+      });
+      
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {

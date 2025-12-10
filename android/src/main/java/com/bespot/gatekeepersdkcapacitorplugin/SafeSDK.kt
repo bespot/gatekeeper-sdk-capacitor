@@ -1,7 +1,6 @@
 package com.bespot.gatekeepersdkcapacitorplugin
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.bespot.shared.common.models.Action
 import com.bespot.shared.core.Failure
@@ -16,7 +15,7 @@ class SafeSDK: FraudulentCheckObserver {
     private val _checkResult: MutableState<Result<CheckResult>> = mutableStateOf(Result.success(CheckResult.empty()))
 
     init {
-        safeSdk.logging(true)
+        //safeSdk.logging(true) // Uncomment if you want to see logs during the app launch
     }
 
     override fun onSuccess(
@@ -35,5 +34,9 @@ class SafeSDK: FraudulentCheckObserver {
         Logger.info("Echo", value)
         safeSdk.check(this)
         return value
+    }
+
+    fun enableLogging(value: Boolean) {
+        safeSdk.logging(value)
     }
 }

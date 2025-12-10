@@ -17,4 +17,11 @@ class SafeSDKPlugin : Plugin() {
         ret.put("value", implementation.echo(value))
         call.resolve(ret)
     }
+
+    @PluginMethod
+    fun enableLogging(call: PluginCall) {
+        val value = call.getBoolean("debugLoggingEnabled") ?: return call.reject("Missing required boolean 'debugLoggingEnabled'")
+        implementation.enableLogging(value)
+        call.resolve()
+    }
 }
