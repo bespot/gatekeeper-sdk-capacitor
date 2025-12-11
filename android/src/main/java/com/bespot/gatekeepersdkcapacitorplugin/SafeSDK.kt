@@ -36,6 +36,9 @@ class SafeSDK: FraudulentCheckObserver {
         return value
     }
 
+    fun setUserId(value: String) {
+        safeSdk.setUserID(value)
+    }
     fun enableLogging(value: Boolean) {
         safeSdk.logging(value)
     }

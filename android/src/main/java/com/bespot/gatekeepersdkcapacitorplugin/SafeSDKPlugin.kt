@@ -19,6 +19,13 @@ class SafeSDKPlugin : Plugin() {
     }
 
     @PluginMethod
+    fun setUserId(call: PluginCall) {
+        val value = call.getString("userId") ?: return call.reject("Missing required 'userId' parameter")
+        implementation.setUserId(value)
+        call.resolve()
+    }
+
+    @PluginMethod
     fun enableLogging(call: PluginCall) {
         val value = call.getBoolean("debugLoggingEnabled") ?: return call.reject("Missing required boolean 'debugLoggingEnabled'")
         implementation.enableLogging(value)
