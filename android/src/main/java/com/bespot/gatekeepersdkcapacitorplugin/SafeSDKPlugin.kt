@@ -20,6 +20,11 @@ class SafeSDKPlugin : Plugin() {
     }
 
     @PluginMethod
+    fun initialize(call: PluginCall) {
+        call.unimplemented("Not implemented on Android. Initialization is done at application launch.")
+    }
+
+    @PluginMethod
     fun check(call: PluginCall) {
         implementation.check() { result ->
             result.onSuccess { checkResult ->
@@ -44,6 +49,7 @@ class SafeSDKPlugin : Plugin() {
             }
         }
     }
+
     @PluginMethod
     fun setUserId(call: PluginCall) {
         val value = call.getString("userId") ?: return call.reject("Missing required 'userId' parameter")
