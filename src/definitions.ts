@@ -16,9 +16,16 @@ export interface InitializeOptions {
   params?: { [key: string]: any };
 }
 
-export type ActionType = 'block' | 'limitAccess' | 'monitor' | 'notSafe' | 'safe';
+export type ActionType = 'BLOCK' | 'LIMIT_ACCESS' | 'MONITOR' | 'NOT_SAFE' | 'SAFE';
 
 export interface Action {
   type: ActionType;
   signature: string;
 }
+
+export interface SafeSDKError {
+  code: SafeSDKErrorType; 
+  message: string;
+}
+
+export type SafeSDKErrorType = 'NETWORK_CONNECTION' | 'NO_ACTIVE_API_KEY' | 'NO_CHECKS_AVAILABLE' | 'NO_RECIPE_FOUND' | 'NOT_INITIALIZED' | 'SERVER_ERROR' | 'UNKNOWN_ERROR';

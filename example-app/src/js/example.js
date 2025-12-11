@@ -60,6 +60,10 @@ window.customElements.define(
       main pre {
         white-space: pre-line;
       }
+      div {
+        overflow-wrap: break-word;
+      }
+
     </style>
     <div>
       <capacitor-welcome-titlebar>
@@ -93,6 +97,10 @@ window.customElements.define(
         <p>
           <button class="button" id="Ask for permissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%">Ask for permissions</button>
         </p>
+          <br><br>
+          Action: <b><label id="ActionLabel">No action result yet</label></b>
+          <br>
+          Signature: <b><label id="SignatureLabel">-</label></b>
         <p>
           <img id="image" style="max-width: 100%">
         </p>
@@ -102,6 +110,14 @@ window.customElements.define(
     }
 
     async connectedCallback() {
+      const actionLabel = this.shadowRoot.getElementById("ActionLabel");
+      const signatureLabel = this.shadowRoot.getElementById("SignatureLabel");
+      
+      function updateLabel(action, signature) {  
+        actionLabel.textContent = action;
+        signatureLabel.textContent = signature;
+      };
+
         const echoButton = this.shadowRoot.getElementById('Echo');
         echoButton.addEventListener('click', async () => {
             await SafeSDK.echo({
@@ -182,8 +198,10 @@ window.customElements.define(
         try {
           const { action } = await SafeSDK.check();
           console.log('Check action:', action.type, action.signature);
+          updateLabel(action.type, action.signature);
         } catch (err) {
           console.error('SafeSDK.check failed', err);
+          updateLabel(err.message, "-");
         }
       });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');

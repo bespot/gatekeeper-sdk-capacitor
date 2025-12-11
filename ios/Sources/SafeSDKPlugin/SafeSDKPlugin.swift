@@ -67,12 +67,12 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
             switch result {
             case .success(let action):
                 let actionDict: [String: Any] = [
-                    "type": String(describing: action.actionType),
+                    "type": self.mapActionType(actionType: action.actionType),
                     "signature": action.signature
                 ]
                 call.resolve(["action": actionDict])
             case .failure(let error):
-                let code = error.rawValue
+                let code = self.mapError(error: error)
                 let message = "SafeSDK check failed: \(code)"
                 call.reject(message, code, nil)
             }
@@ -100,5 +100,43 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func enableLogging(_ call: CAPPluginCall) {
         call.unimplemented("Not implemented on iOS. Use the `debugLoggingEnabled` boolean parameter in the `initialize(_)` method to enable debug logging")
+    }
+
+    private func mapActionType(actionType: ActionType) -> String {
+        switch actionType {
+        case .block:
+            return "BLOCK"
+        case .limitAccess:
+            return "LIMIT_ACCESS"
+        case .monitor:
+            return "MONITOR"
+        case .notSafe:
+            return "NOT_SAFE"
+        case .safe:
+            return "SAFE"
+        @unknown default:
+            return "DEFAULT_UNKNOWN_ACTION"
+        }
+    }
+
+    private func mapError(error: SDKError) -> String {
+        switch error {
+        case .networkConnection:
+            return "NETWORK_CONNECTION"
+        case .noActiveApiKey:
+            return "NO_ACTIVE_API_KEY"
+        case .noChecksAvailableFailure:
+            return "NO_CHECKS_AVAILABLE"
+        case .noRecipeFoundFailure:
+            return "NO_RECIPE_FOUND"
+        case .notInitialized:
+            return "NOT_INITIALIZED"
+        case .serverError:
+            return "SERVER_ERROR"
+        case .unknownError:
+            return "UNKNOWN_ERROR"
+        @unknown default:
+            return "DEFAULT_UNKNOWN_ERROR"
+        }
     }
 }

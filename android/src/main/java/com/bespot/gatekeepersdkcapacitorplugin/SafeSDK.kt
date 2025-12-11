@@ -23,7 +23,6 @@ class SafeSDK: FraudulentCheckObserver {
         signature: String,
     ) {
         _checkResult.value = Result.success(CheckResult(action = action, ticket = signature))
-        Logger.info("Gatekeeper Plugin", action.name)
     }
 
     override fun onError(error: Failure) {
@@ -35,6 +34,21 @@ class SafeSDK: FraudulentCheckObserver {
         safeSdk.check(this)
         return value
     }
+
+    fun check(callback: (result: Result<CheckResult>) -> Unit) {
+        safeSdk.check(object : FraudulentCheckObserver {
+            override fun onSuccess(action: Action, signature: String) {
+                // Send successful result back through callback
+                callback(Result.success(CheckResult(action = action, ticket = signature)))
+            }
+
+            override fun onError(error: Failure) {
+                // Send error back through callback
+                callback(Result.failure(error))
+            }
+        })
+    }
+
 
     fun setUserId(value: String) {
         safeSdk.setUserID(value)
