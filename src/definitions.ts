@@ -3,6 +3,7 @@ export interface SafeSDKPlugin {
   subscribe(): Promise<{ action: Action }>;
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
+  enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
   askForLocationPermissions(): Promise<void>;
   askForStoragePermissions(): Promise<void>;
