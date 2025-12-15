@@ -1,7 +1,10 @@
 # Bespot Gatekeeper Capacitor Plugin
 
 ## Intro to Gatekeeper
+
 Bespot Gatekeeper is a highly customizable fraud prevention and geolocation verification platform for mobile and web applications. It verifies user locations, detects device integrity issues, and monitors network connections to help organizations—particularly in the iGaming, Media Streaming, and Financial Services industries—comply with regulations and protect digital transactions from fraud.
+
+Capacitor plugins act as thin wrappers around the original native SDKs, allowing Angular/Ionic developers to integrate Gatekeeper easily in cross-platform applications for both **iOS** and **Android**, while relying on the same underlying fraud-detection engine.
 
 ## Features
 
@@ -12,21 +15,25 @@ See our [documentation](https://gatekeeper.docs.bespot.com/overview/features/) f
 To install the `gatekeeper-sdk-capacitor` plugin in your Ionic/JavaScript project do the following:
 
 1. From the root of your Ionic/Javascript app run:
-```
+
+```bash
 npm install git+https://github.com/bespot/gatekeeper-sdk-capacitor.git
 ```
 
 2. Sync Capacitor:
+
+```bash
+npx cap sync
 ```
-npx cap sync ios
-```
+
+---
 
 # Capacitor for iOS
 
 ## Requirements
 
-- iOS 15.0+
-- Xcode 16
+* iOS 15.0+
+* Xcode 16
 
 ## Install with CocoaPods
 
@@ -38,9 +45,6 @@ require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 platform :ios, '15.0'
 use_frameworks!
 
-# workaround to avoid Xcode caching of Pods that requires
-# Product -> Clean Build Folder after new Cordova plugins installed
-# Requires CocoaPods 1.6 or newer
 install! 'cocoapods', :disable_input_output_paths => true
 
 def capacitor_pods
@@ -52,7 +56,6 @@ end
 
 target 'YourApp' do
   capacitor_pods
-  # Add your Pods here
 end
 
 post_install do |installer|
@@ -60,107 +63,207 @@ post_install do |installer|
 end
 ```
 
-2. Run on your terminal:
+2. Run:
 
-```shell
+```bash
 pod install
 ```
 
 ## Permissions
 
-SafeSDK requires access to **Location Services**. Add the following to your app's `Info.plist`:
+Add the following to your app's `Info.plist`:
+
 ```xml
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Your location is required for fraud-prevention analysis.</string>
 ```
 
 ## Import
-In your app code (TypeScript or JavaScript):
-```TypeScript
+
+```ts
 import { SafeSDK } from 'gatekeeper-sdk-capacitor';
 ```
 
-## API
-The following methods are available:
-- `askForPermissions(): Promise<void>` (optional, required for location aware fraud checks)
-- `initialize(options: InitializeOptions): Promise<void>` (required for the SDK to function)
-- `setUserId(options: { userId: string }): Promise<void>` (optional)
-- `check(): Promise<{ action: Action }>` (optional, required for on-demand fraud checks)
-- `subscribe(): Promise<{ action: Action }>` (optional, required for periodic fraud checks)
-- `unsubscribe(): Promise<void>` (optional, required for periodic fraud checks)
+---
 
-## Model
-```TypeScript
-export type ActionType =
-  | 'block'
-  | 'limitAccess'
-  | 'monitor'
-  | 'notSafe'
-  | 'safe';
+# Capacitor for Android
 
+The Android Capacitor plugin wraps the **Bespot Gatekeeper Android SDK**, exposing a Promise-based API suitable for Ionic/Angular applications.
+
+## Requirements
+
+* Android API 24+
+* Android Studio (latest stable)
+
+### Repositories
+
+In `android/settings.gradle` (or the root `build.gradle` for legacy setups), add:
+
+```kotlin
+dependencyResolutionManagement {
+  maven(url = "https://artifactory.bespot.com/artifactory/bespot-antifraud")
+  maven(url = "https://artifactory.bespot.com/artifactory/bespot-logger")
+  maven(url = "https://jitpack.io")
+}
+```
+
+### Configuration values
+
+Provide the required credentials either via `resValue` entries in `android/app/build.gradle`:
+
+```kotlin
+resValue("string", "antifraud_sdk_key", YOUR_API_KEY)
+resValue("string", "antifraud_sdk_api_url", API_URL)
+resValue("string", "antifraud_sdk_client_id", YOUR_CLIENT_ID)
+resValue("string", "antifraud_sdk_client_secret", YOUR_CLIENT_SECRET)
+resValue("string", "antifraud_sdk_oauth2_token_url", OAUTH2_TOKEN_URL)
+```
+
+or directly in `strings.xml`:
+
+```xml
+<string name="antifraud_sdk_key">YOUR_API_KEY</string>
+<string name="antifraud_sdk_api_url">API_URL</string>
+<string name="antifraud_sdk_client_id">YOUR_CLIENT_ID</string>
+<string name="antifraud_sdk_client_secret">YOUR_CLIENT_SECRET</string>
+<string name="antifraud_sdk_oauth2_token_url">OAUTH2_TOKEN_URL</string>
+```
+
+Optionally, use local and not version controlled `local.properties` to set the above vars.
+
+## Permissions
+
+Depending on your fraud-prevention strategy, declare the following permissions in `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+  android:maxSdkVersion="32" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+  android:maxSdkVersion="28" />
+<uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+```
+
+Runtime permission requests should be handled at the app level before invoking location-aware checks.
+
+## Import
+
+```ts
+import { SafeSDK } from 'gatekeeper-sdk-capacitor';
+```
+
+---
+
+# JavaScript / TypeScript API (iOS & Android)
+
+## Available methods
+
+* `askForLocationPermissions(): Promise<void>` *(Android & iOS)*
+* `askForStoragePermissions(): Promise<void>` *(Android only)*
+* `askForMediaAudioPermissions(): Promise<void>` *(Android only)*
+* `initialize(options: InitializeOptions): Promise<void>` *(required on iOS)*
+* `setUserId(options: { userId: string }): Promise<void>` *(optional)*
+* `check(): Promise<{ action: Action }>` *(on-demand checks)*
+* `subscribe(): Promise<{ action: Action }>` *(periodic checks)*
+* `unsubscribe(): Promise<void>` *(stop periodic checks)*
+* `enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>` *(Android only - optional)*
+
+## Models
+
+```ts
+// Action result object
 export interface Action {
   type: ActionType;
   signature: string;
 }
+
+// Action result type
+export type ActionType = 'BLOCK'
+  | 'LIMIT_ACCESS'
+  | 'MONITOR'
+  | 'NOT_SAFE'
+  | 'SAFE';
+
+// Error object
+export interface SafeSDKError {
+  code: SafeSDKErrorType;
+  message: string;
+}
+
+// Error code type
+export type SafeSDKErrorType = 'NETWORK_CONNECTION'
+  | 'NO_ACTIVE_API_KEY'
+  | 'NO_CHECKS_AVAILABLE'
+  | 'NO_RECIPE_FOUND'
+  | 'NOT_INITIALIZED'
+  | 'SERVER_ERROR'
+  | 'UNKNOWN_ERROR';
 ```
 
-## Usage
+## Usage examples
 
-### Ask for location permission
-Request user location permission to enable location aware fraud checks:
-```TypeScript
-await SafeSDK.askForPermissions();
+### Request permissions
+Initially, call the following methods to allow the user select the appropriate permissions.
+
+```ts
+await SafeSDK.askForLocationPermissions();
+await SafeSDK.askForStoragePermissions();
+await SafeSDK.askForMediaAudioPermissions();
 ```
 
-### Initialize the SafeSDK
-Call **once** early in your app lifecycle:
-```TypeScript
+### Initialize
+Use this function **only in iOS** in order for the SDK to be initialized. As of this plugin version, initialization in Android is done during application launch:
+```ts
 await SafeSDK.initialize({
-    apiBaseUrl: "the_provided_API_base_URL",
-    apiKey: "the_provided_API_key",
-    authTokenUrl: "the_provided_oauth2_URL",
-    clientId: "the_provided_oauth2_clientid",
-    clientSecret: "the_provided_oauth2_clientsecret",
-    params: { debugLoggingEnabled: Bool }, // optional
-  });
+  apiBaseUrl: "the_provided_API_base_URL",
+  apiKey: "the_provided_API_key",
+  authTokenUrl: "the_provided_oauth2_URL",
+  clientId: "the_provided_oauth2_clientid",
+  clientSecret: "the_provided_oauth2_clientsecret",
+  params: { debugLoggingEnabled: true },
+});
 ```
 
 ### Identify user
 After initialization is completed, SafeSDK supports holding a customer/client related unique user identifier which can be provided at any time using the following method:
-```TypeScript
+
+```ts
 await SafeSDK.setUserId({ userId });
 ```
 
 ### On-demand check
-Use the following method to make an informed decision on what action to take in case of detected fraudulent activities by SafeSDK:
-```TypeScript
-try {
-  const { action } = await SafeSDK.check();
-  console.log(`Action: ${action.type}, signature: ${action.signature}`);
-} catch (err) {
-  console.error(`Check failed with error: ${err}`);
-}
+Use the following method to check on-demand for fraudulent activity:
+```ts
+const { action } = await SafeSDK.check();
+// Act quickly based on the `action.type`
+// Keep the `action.signature`
+// [Optional] Send `action` over to your server to verify with Gatekeeper server
 ```
 
-### Subscribe to Fraud Detection Updates
-You can now subscribe to continuous fraud detection results using the `subscribe()` method:
-```TypeScript
-try {
-  const { action } = await SafeSDK.subscribe();
-  console.log(`Action: ${action.type}, signature: ${action.signature}`);
-} catch (err) {
-  console.error(`Subscription failed with error: ${err}`);
-}
+### Subscribe
+Subscribe for continuous fraud detection updates (event delivery) using the subscribe method *(currently implemented on iOS only)*:
+```ts
+await SafeSDK.subscribe();
 ```
+*This method provides exactly the same result as on-demand check, but periodically.*
 
-### Unsubscribe from Fraud Detection Updates
-Terminates the active subscription to fraud detection updates. Use this method when you no longer wish to receive updates from the SDK.
-```TypeScript
+### Unsubscribe
+Stop the active subscription to fraud detection updates *(currently implemented on iOS only)*:
+```ts
 await SafeSDK.unsubscribe();
 ```
 
-## Support
+### Logging
+Enable debug logging. Should **not be used in production builds** (Android only - use `initialize(_)` function `debugLoggingEnabled` parameter above to enable logging on iOS):
 
+```ts
+await SafeSDK.enableLogging({ debugLoggingEnabled: true });
+```
+
+---
+
+## Support
 We use [Github](https://github.com/bespot/antifraud-sdk-ios-release/issues) issues to track bugs and enhancements.
 
 - If you find a bug please fill out an issue report. Provide as much information as possible.
@@ -168,6 +271,6 @@ We use [Github](https://github.com/bespot/antifraud-sdk-ios-release/issues) issu
 
 In case you need to contact us, drop us an email at: dev@bespot.com
 
-
 ## License
+
 © 2025 [Bespot](https://bespot.com/) Private Company. All rights reserved. See `LICENSE` for more information.
