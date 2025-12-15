@@ -25,8 +25,14 @@ android {
         // Enable remote logging (for Bespot only)
         resValue("bool", "antifraud_sdk_enable_remote_logs", "true")
     }
+    signingConfigs {
+        debug {
+            // already exists
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
