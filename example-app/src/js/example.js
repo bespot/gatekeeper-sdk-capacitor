@@ -95,9 +95,11 @@ window.customElements.define(
         </div>
         </p>
         <p>
-          <button class="button" id="Ask for permissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%">Ask for permissions</button>
+          <button class="button" id="LocationPermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for location permissions</button>
+          <button class="button" id="StoragePermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for storage permissions (Android)</button>
+          <button class="button" id="MediaAudioPermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for media-audio permissions (Android 13+)</button>
         </p>
-          <br><br>
+          <br>
           Action: <b><label id="ActionLabel">No action result yet</label></b>
           <br>
           Signature: <b><label id="SignatureLabel">-</label></b>
@@ -173,14 +175,36 @@ window.customElements.define(
       registerUserIdButton(userId2Button);
       registerUserIdButton(userId3Button);
 
-      const askForPermissionsButton = this.shadowRoot.getElementById('Ask for permissions');
+      const askForLocationPermissionsButton = this.shadowRoot.getElementById('LocationPermissions');
 
-      askForPermissionsButton.addEventListener('click', async () => {
+      askForLocationPermissionsButton.addEventListener('click', async () => {
         try {
-          await SafeSDK.askForPermissions();
-          console.log('Permissions requested');
+          await SafeSDK.askForLocationPermissions();
+          console.log('Location Permissions requested');
         } catch (err) {
-          console.error('SafeSDK.askForPermissions failed', err);
+          console.error('SafeSDK.askForLocationPermissions failed', err);
+        }
+      });
+
+      const askForStoragePermissionsButton = this.shadowRoot.getElementById('StoragePermissions');
+
+      askForStoragePermissionsButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.askForStoragePermissions();
+          console.log('Storage Permissions requested');
+        } catch (err) {
+          console.error('SafeSDK.askForStoragePermissions failed', err);
+        }
+      });
+
+      const askForMediaAudioPermissionsButton = this.shadowRoot.getElementById('MediaAudioPermissions');
+
+      askForMediaAudioPermissionsButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.askForMediaAudioPermissions();
+          console.log('Media-audio Permissions requested');
+        } catch (err) {
+          console.error('SafeSDK.askForMediaAudioPermissions failed', err);
         }
       });
 

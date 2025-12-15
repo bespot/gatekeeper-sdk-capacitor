@@ -1,13 +1,42 @@
 package com.bespot.gatekeepersdkcapacitorplugin
 
+import android.Manifest
 import com.bespot.shared.core.Failure
 import com.getcapacitor.JSObject
+import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import com.getcapacitor.annotation.Permission
+import com.getcapacitor.annotation.PermissionCallback
 
-@CapacitorPlugin(name = "SafeSDK")
+
+@CapacitorPlugin(
+    name = "SafeSDK",
+    permissions = [
+        Permission(
+            alias = "location",
+            strings = [
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ]
+        ),
+        Permission(
+            alias = "storage",
+            strings = [
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ]
+        ),
+        Permission(
+            alias = "media-audio",
+            strings = [
+                Manifest.permission.READ_MEDIA_AUDIO
+            ]
+        )
+    ]
+)
 class SafeSDKPlugin : Plugin() {
     private val implementation = SafeSDK()
 
@@ -62,6 +91,60 @@ class SafeSDKPlugin : Plugin() {
         val value = call.getBoolean("debugLoggingEnabled") ?: return call.reject("Missing required boolean 'debugLoggingEnabled'")
         implementation.enableLogging(value)
         call.resolve()
+    }
+
+    @PluginMethod
+    fun askForLocationPermissions(call: PluginCall) {
+        if (getPermissionState("location") != PermissionState.GRANTED) {
+            requestPermissionForAlias("location", call, "locationPermsCallback")
+        } else {
+            call.resolve()
+        }
+    }
+
+    @PermissionCallback
+    private fun locationPermsCallback(call: PluginCall) {
+        if (getPermissionState("location") == PermissionState.GRANTED) {
+            call.resolve()
+        } else {
+            call.reject("Location permission denied")
+        }
+    }
+
+    @PluginMethod
+    fun askForStoragePermissions(call: PluginCall) {
+        if (getPermissionState("storage") != PermissionState.GRANTED) {
+            requestPermissionForAlias("storage", call, "storagePermsCallback")
+        } else {
+            call.resolve()
+        }
+    }
+
+    @PermissionCallback
+    private fun storagePermsCallback(call: PluginCall) {
+        if (getPermissionState("storage") == PermissionState.GRANTED) {
+            call.resolve()
+        } else {
+            call.reject("Storage permission denied")
+        }
+    }
+
+    @PluginMethod
+    fun askForMediaAudioPermissions(call: PluginCall) {
+        if (getPermissionState("media-audio") != PermissionState.GRANTED) {
+            requestPermissionForAlias("media-audio", call, "mediaAudioPermsCallback")
+        } else {
+            call.resolve()
+        }
+    }
+
+    @PermissionCallback
+    private fun mediaAudioPermsCallback(call: PluginCall) {
+        if (getPermissionState("media-audio") == PermissionState.GRANTED) {
+            call.resolve()
+        } else {
+            call.reject("Media-audio permission denied")
+        }
     }
 
     private fun mapFailureToCodeAndMessage(error: Failure): Pair<String, String> {

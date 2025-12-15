@@ -18,7 +18,7 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "askForPermissions", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "askForLocationPermissions", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "enableLogging", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = SafeSDK()
@@ -93,7 +93,7 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
-    @objc func askForPermissions(_ call: CAPPluginCall) {
+    @objc func askForLocationPermissions(_ call: CAPPluginCall) {
         self.locationManager.requestWhenInUseAuthorization()
         call.resolve()
     }
