@@ -3,8 +3,11 @@ export interface SafeSDKPlugin {
   subscribe(): Promise<{ action: Action }>;
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
+  enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
-  askForPermissions(): Promise<void>;
+  askForLocationPermissions(): Promise<void>;
+  askForStoragePermissions(): Promise<void>;
+  askForMediaAudioPermissions(): Promise<void>;
 }
 
 export interface InitializeOptions {
@@ -16,9 +19,16 @@ export interface InitializeOptions {
   params?: { [key: string]: any };
 }
 
-export type ActionType = 'block' | 'limitAccess' | 'monitor' | 'notSafe' | 'safe';
+export type ActionType = 'BLOCK' | 'LIMIT_ACCESS' | 'MONITOR' | 'NOT_SAFE' | 'SAFE';
 
 export interface Action {
   type: ActionType;
   signature: string;
 }
+
+export interface SafeSDKError {
+  code: SafeSDKErrorType; 
+  message: string;
+}
+
+export type SafeSDKErrorType = 'NETWORK_CONNECTION' | 'NO_ACTIVE_API_KEY' | 'NO_CHECKS_AVAILABLE' | 'NO_RECIPE_FOUND' | 'NOT_INITIALIZED' | 'SERVER_ERROR' | 'UNKNOWN_ERROR';

@@ -1,4 +1,4 @@
-package com.example.plugin;
+package com.bespot.capacitorplugin.androidapp;
 
 import com.getcapacitor.BridgeActivity;
 
