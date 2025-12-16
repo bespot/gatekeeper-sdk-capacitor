@@ -32,8 +32,8 @@ npx cap sync
 
 ## Requirements
 
-* iOS 15.0+
-* Xcode 16
+* iOS 15.0 or later
+* Built and tested using Xcode 16
 
 ## Install with CocoaPods
 

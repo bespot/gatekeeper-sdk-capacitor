@@ -72,8 +72,6 @@ class SafeSDKPlugin : Plugin() {
                     put("code", code)
                     put("message", message)
                 }
-                val responseCode = code
-                val responseMessage = "SafeSDK check failed: $message"
                 call.reject(message, code, response)
             }
         }
