@@ -1,10 +1,13 @@
+import type { PluginListenerHandle } from '@capacitor/core';
+
 export interface SafeSDKPlugin {
   initialize(options: InitializeOptions): Promise<void>;
-  subscribe(): Promise<{ action: Action }>;
+  subscribe(): Promise<void>;
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
   askForPermissions(): Promise<void>;
+  addListener(eventName: 'receivedAction', listenerFunc: (action: Action) => void): Promise<PluginListenerHandle>;
 }
 
 export interface InitializeOptions {

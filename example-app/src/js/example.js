@@ -60,6 +60,19 @@ window.customElements.define(
       main pre {
         white-space: pre-line;
       }
+    .signature-box {
+     display: block;
+     width: 100%;
+     font-family: monospace;
+     font-size: 0.7em;
+     white-space: pre-wrap;
+     word-break: break-all;
+     overflow-wrap: anywhere;
+     max-height: 120px;
+     overflow-y: auto;
+     border: 1px solid #ddd;
+     padding: 4px;
+    }
     </style>
     <div>
       <capacitor-welcome-titlebar>
@@ -86,6 +99,8 @@ window.customElements.define(
         <p>
           <button class="button" id="Ask for permissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%">Ask for permissions</button>
         </p>
+        <p id="action-type-label">Action type: —</p>
+        <div id="action-signature-label" class="signature-box">Signature: —</div>
         <p>
           <img id="image" style="max-width: 100%">
         </p>
@@ -95,6 +110,7 @@ window.customElements.define(
     }
 
     async connectedCallback() {
+      let actionListener = null;
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {
@@ -112,6 +128,8 @@ window.customElements.define(
         }
       });
 
+      const actionTypeLabel = this.shadowRoot.getElementById('action-type-label');
+      const actionSignatureLabel = this.shadowRoot.getElementById('action-signature-label');
       const userId1Button = this.shadowRoot.getElementById('UserId 1');
       const userId2Button = this.shadowRoot.getElementById('UserId 2');
       const userId3Button = this.shadowRoot.getElementById('UserId 3');
@@ -147,8 +165,17 @@ window.customElements.define(
       const subscribeButton = this.shadowRoot.getElementById('Subscribe');
       subscribeButton.addEventListener('click', async () => {
         try {
-          const { action } = await SafeSDK.subscribe();
-          console.log('Subscribe action:', action.type, action.signature);
+          if (!actionListener) {
+            actionListener = await SafeSDK.addListener('receivedAction', (action) => {
+              if (actionTypeLabel) {
+                actionTypeLabel.textContent = `Action type: ${action.type}`;
+              }
+              if (actionSignatureLabel) {
+                actionSignatureLabel.textContent = `Signature: ${action.signature}`;
+              }
+            });
+          }
+          await SafeSDK.subscribe();
         } catch (err) {
           console.error('SafeSDK.subscribe failed', err);
         }
@@ -158,6 +185,12 @@ window.customElements.define(
         try {
           const { action } = await SafeSDK.check();
           console.log('Check action:', action.type, action.signature);
+          if (actionTypeLabel) {
+            actionTypeLabel.textContent = `Action type: ${action.type}`;
+          }
+          if (actionSignatureLabel) {
+            actionSignatureLabel.textContent = `Signature: ${action.signature}`;
+          }
         } catch (err) {
           console.error('SafeSDK.check failed', err);
         }
@@ -166,9 +199,13 @@ window.customElements.define(
       unsubscribeButton.addEventListener('click', async () => {
         try {
           await SafeSDK.unsubscribe();
+          if (actionListener) {
+            await actionListener.remove();
+            actionListener = null;
+          }
           console.log('SafeSDK.unsubscribe is done!');
         } catch (err) {
-          console.error('SafeSDK.subscribe failed', err);
+          console.error('SafeSDK.unsubscribe failed', err);
         }
       });
     }
