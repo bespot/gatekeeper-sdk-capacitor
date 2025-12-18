@@ -60,25 +60,23 @@ window.customElements.define(
       main pre {
         white-space: pre-line;
       }
-    .signature-box {
-     display: block;
-     width: 100%;
-     font-family: monospace;
-     font-size: 0.7em;
-     white-space: pre-wrap;
-     word-break: break-all;
-     overflow-wrap: anywhere;
-     max-height: 120px;
-     overflow-y: auto;
-     border: 1px solid #ddd;
-     padding: 4px;
-    }
+      div {
+        overflow-wrap: break-word;
+      }
+
     </style>
     <div>
       <capacitor-welcome-titlebar>
         <h1>Capacitor</h1>
       </capacitor-welcome-titlebar>
       <main>
+        <div class="buttons-row">
+          <button class="button" id="EnableLogging" style="background-color: #28A745; color: white;">Enable Logging</button>
+          <button class="button" id="DisableLogging" style="background-color: #FA120A; color: white;">Disable Logging</button>
+        </div>
+        <p>
+          <button class="button" id="Echo" style="background-color:rgb(255, 217, 0); color: white; display: block; width: 100%">Echo</button>
+        </p>
         <p>
           <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
         </p>
@@ -97,10 +95,14 @@ window.customElements.define(
         </div>
         </p>
         <p>
-          <button class="button" id="Ask for permissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%">Ask for permissions</button>
+          <button class="button" id="LocationPermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for location permissions</button>
+          <button class="button" id="StoragePermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for storage permissions (Android)</button>
+          <button class="button" id="MediaAudioPermissions" style="background-color: #1E3F4A; color: white; display: block; width: 100%; height: 36px; margin-bottom:8px;">Ask for media-audio permissions (Android 13+)</button>
         </p>
-        <p id="action-type-label">Action type: —</p>
-        <div id="action-signature-label" class="signature-box">Signature: —</div>
+          <br>
+          Action: <b><label id="ActionLabel">No action result yet</label></b>
+          <br>
+          Signature: <b><label id="SignatureLabel">-</label></b>
         <p>
           <img id="image" style="max-width: 100%">
         </p>
@@ -111,6 +113,31 @@ window.customElements.define(
 
     async connectedCallback() {
       let actionListener = null;
+      const actionLabel = this.shadowRoot.getElementById("ActionLabel");
+      const signatureLabel = this.shadowRoot.getElementById("SignatureLabel");
+      
+      function updateLabel(action, signature) {  
+        actionLabel.textContent = action;
+        signatureLabel.textContent = signature;
+      };
+
+        const echoButton = this.shadowRoot.getElementById('Echo');
+        echoButton.addEventListener('click', async () => {
+            await SafeSDK.echo({
+                value: 'Hello, world!',
+            });
+        });
+
+      const enableLoggingButton = this.shadowRoot.getElementById('EnableLogging');
+      enableLoggingButton.addEventListener('click', async () => {
+        SafeSDK.enableLogging({ debugLoggingEnabled: true });
+      });
+
+      const disableLoggingButton = this.shadowRoot.getElementById('DisableLogging');
+      disableLoggingButton.addEventListener('click', async () => {
+        SafeSDK.enableLogging({ debugLoggingEnabled: false });
+      });
+      
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {
@@ -151,14 +178,36 @@ window.customElements.define(
       registerUserIdButton(userId2Button);
       registerUserIdButton(userId3Button);
 
-      const askForPermissionsButton = this.shadowRoot.getElementById('Ask for permissions');
+      const askForLocationPermissionsButton = this.shadowRoot.getElementById('LocationPermissions');
 
-      askForPermissionsButton.addEventListener('click', async () => {
+      askForLocationPermissionsButton.addEventListener('click', async () => {
         try {
-          await SafeSDK.askForPermissions();
-          console.log('Permissions requested');
+          await SafeSDK.askForLocationPermissions();
+          console.log('Location Permissions requested');
         } catch (err) {
-          console.error('SafeSDK.askForPermissions failed', err);
+          console.error('SafeSDK.askForLocationPermissions failed', err);
+        }
+      });
+
+      const askForStoragePermissionsButton = this.shadowRoot.getElementById('StoragePermissions');
+
+      askForStoragePermissionsButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.askForStoragePermissions();
+          console.log('Storage Permissions requested');
+        } catch (err) {
+          console.error('SafeSDK.askForStoragePermissions failed', err);
+        }
+      });
+
+      const askForMediaAudioPermissionsButton = this.shadowRoot.getElementById('MediaAudioPermissions');
+
+      askForMediaAudioPermissionsButton.addEventListener('click', async () => {
+        try {
+          await SafeSDK.askForMediaAudioPermissions();
+          console.log('Media-audio Permissions requested');
+        } catch (err) {
+          console.error('SafeSDK.askForMediaAudioPermissions failed', err);
         }
       });
 
@@ -185,6 +234,7 @@ window.customElements.define(
         try {
           const { action } = await SafeSDK.check();
           console.log('Check action:', action.type, action.signature);
+          updateLabel(action.type, action.signature);
           if (actionTypeLabel) {
             actionTypeLabel.textContent = `Action type: ${action.type}`;
           }
@@ -193,6 +243,7 @@ window.customElements.define(
           }
         } catch (err) {
           console.error('SafeSDK.check failed', err);
+          updateLabel(err.message, "-");
         }
       });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');

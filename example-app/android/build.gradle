@@ -1,5 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
 buildscript {
     
     repositories {
@@ -21,6 +29,17 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://artifactory.bespot.com/artifactory/bespot-antifraud" }
+        maven { url "https://artifactory.bespot.com/artifactory/bespot-logger" }
+        maven { url "https://jitpack.io" }
+    }
+    ext {
+        getLocalProperty = { String key ->
+            return localProperties.getProperty(key) ?: ""
+        }
+        getLocalPropertyFormatted = { String key ->
+            return "\"${getLocalProperty(key)}\""
+        }
     }
 }
 

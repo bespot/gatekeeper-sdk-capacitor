@@ -1,1 +1,44 @@
-/build
+# Gradle
+.gradle/
+build/
+*/build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+# Local configuration
+local.properties
+*.keystore
+*.jks
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generated
+captures/
+output.json
+
+# NDK
+obj/
+
+# Kotlin
+.kotlin/
+
+# Java / Kotlin compiler
+*.class
+
+# Android specific
+*.hprof
+
+# Jetpack Compose previews
+*.compose-settings.json
+
