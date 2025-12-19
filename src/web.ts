@@ -20,18 +20,7 @@ export class SafeSDKWeb extends WebPlugin implements SafeSDKPlugin {
   async setUserId(options: { userId: string }): Promise<void> {
     console.warn('SafeSDK.setUserId is not implemented on web', options);
   }
-  async askForPermissions(): Promise<void> {
+  async askForLocationPermissions(): Promise<void> {
     console.warn('SafeSDK.askForPermissions is not implemented on web');
-  }
-  async addListener(
-    eventName: 'receivedAction',
-    listenerFunc: (action: Action) => void,
-  ): Promise<PluginListenerHandle> {
-    console.warn('SafeSDK.addListener is not implemented on web', eventName);
-    return {
-      remove: async () => {
-        console.warn('SafeSDK listener removal is not implemented on web');
-      },
-    };
   }
 }

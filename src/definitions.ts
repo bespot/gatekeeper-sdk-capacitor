@@ -10,8 +10,6 @@ export interface SafeSDKPlugin {
   askForLocationPermissions(): Promise<void>;
   askForStoragePermissions(): Promise<void>;
   askForMediaAudioPermissions(): Promise<void>;
-  askForPermissions(): Promise<void>;
-  addListener(eventName: 'receivedAction', listenerFunc: (action: Action) => void): Promise<PluginListenerHandle>;
 }
 
 export interface InitializeOptions {
@@ -31,8 +29,15 @@ export interface Action {
 }
 
 export interface SafeSDKError {
-  code: SafeSDKErrorType; 
+  code: SafeSDKErrorType;
   message: string;
 }
 
-export type SafeSDKErrorType = 'NETWORK_CONNECTION' | 'NO_ACTIVE_API_KEY' | 'NO_CHECKS_AVAILABLE' | 'NO_RECIPE_FOUND' | 'NOT_INITIALIZED' | 'SERVER_ERROR' | 'UNKNOWN_ERROR';
+export type SafeSDKErrorType =
+  | 'NETWORK_CONNECTION'
+  | 'NO_ACTIVE_API_KEY'
+  | 'NO_CHECKS_AVAILABLE'
+  | 'NO_RECIPE_FOUND'
+  | 'NOT_INITIALIZED'
+  | 'SERVER_ERROR'
+  | 'UNKNOWN_ERROR';

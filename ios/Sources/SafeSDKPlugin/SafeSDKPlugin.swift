@@ -52,7 +52,7 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
             switch result {
             case .success(let action):
                 let actionDict: [String: Any] = [
-                    "type": String(describing: action.actionType),
+                    "type": self.mapActionType(actionType: action.actionType),
                     "signature": action.signature
                 ]
                 self.notifyListeners("receivedAction", data: actionDict)

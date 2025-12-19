@@ -75,9 +75,6 @@ window.customElements.define(
           <button class="button" id="DisableLogging" style="background-color: #FA120A; color: white;">Disable Logging</button>
         </div>
         <p>
-          <button class="button" id="Echo" style="background-color:rgb(255, 217, 0); color: white; display: block; width: 100%">Echo</button>
-        </p>
-        <p>
           <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
         </p>
         <p>
@@ -113,20 +110,13 @@ window.customElements.define(
 
     async connectedCallback() {
       let actionListener = null;
-      const actionLabel = this.shadowRoot.getElementById("ActionLabel");
-      const signatureLabel = this.shadowRoot.getElementById("SignatureLabel");
-      
-      function updateLabel(action, signature) {  
+      const actionLabel = this.shadowRoot.getElementById('ActionLabel');
+      const signatureLabel = this.shadowRoot.getElementById('SignatureLabel');
+
+      function updateLabel(action, signature) {
         actionLabel.textContent = action;
         signatureLabel.textContent = signature;
-      };
-
-        const echoButton = this.shadowRoot.getElementById('Echo');
-        echoButton.addEventListener('click', async () => {
-            await SafeSDK.echo({
-                value: 'Hello, world!',
-            });
-        });
+      }
 
       const enableLoggingButton = this.shadowRoot.getElementById('EnableLogging');
       enableLoggingButton.addEventListener('click', async () => {
@@ -137,7 +127,7 @@ window.customElements.define(
       disableLoggingButton.addEventListener('click', async () => {
         SafeSDK.enableLogging({ debugLoggingEnabled: false });
       });
-      
+
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {
@@ -155,8 +145,6 @@ window.customElements.define(
         }
       });
 
-      const actionTypeLabel = this.shadowRoot.getElementById('action-type-label');
-      const actionSignatureLabel = this.shadowRoot.getElementById('action-signature-label');
       const userId1Button = this.shadowRoot.getElementById('UserId 1');
       const userId2Button = this.shadowRoot.getElementById('UserId 2');
       const userId3Button = this.shadowRoot.getElementById('UserId 3');
@@ -216,17 +204,13 @@ window.customElements.define(
         try {
           if (!actionListener) {
             actionListener = await SafeSDK.addListener('receivedAction', (action) => {
-              if (actionTypeLabel) {
-                actionTypeLabel.textContent = `Action type: ${action.type}`;
-              }
-              if (actionSignatureLabel) {
-                actionSignatureLabel.textContent = `Signature: ${action.signature}`;
-              }
+              updateLabel(action.type, action.signature);
             });
           }
           await SafeSDK.subscribe();
         } catch (err) {
           console.error('SafeSDK.subscribe failed', err);
+          updateLabel(err.message, '-');
         }
       });
       const checkButton = this.shadowRoot.getElementById('Check Now');
@@ -235,15 +219,9 @@ window.customElements.define(
           const { action } = await SafeSDK.check();
           console.log('Check action:', action.type, action.signature);
           updateLabel(action.type, action.signature);
-          if (actionTypeLabel) {
-            actionTypeLabel.textContent = `Action type: ${action.type}`;
-          }
-          if (actionSignatureLabel) {
-            actionSignatureLabel.textContent = `Signature: ${action.signature}`;
-          }
         } catch (err) {
           console.error('SafeSDK.check failed', err);
-          updateLabel(err.message, "-");
+          updateLabel(err.message, '-');
         }
       });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');
