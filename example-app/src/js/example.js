@@ -75,9 +75,6 @@ window.customElements.define(
           <button class="button" id="DisableLogging" style="background-color: #FA120A; color: white;">Disable Logging</button>
         </div>
         <p>
-          <button class="button" id="Echo" style="background-color:rgb(255, 217, 0); color: white; display: block; width: 100%">Echo</button>
-        </p>
-        <p>
           <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
         </p>
         <p>
@@ -112,20 +109,14 @@ window.customElements.define(
     }
 
     async connectedCallback() {
-      const actionLabel = this.shadowRoot.getElementById("ActionLabel");
-      const signatureLabel = this.shadowRoot.getElementById("SignatureLabel");
-      
-      function updateLabel(action, signature) {  
+      let actionListener = null;
+      const actionLabel = this.shadowRoot.getElementById('ActionLabel');
+      const signatureLabel = this.shadowRoot.getElementById('SignatureLabel');
+
+      function updateLabel(action, signature) {
         actionLabel.textContent = action;
         signatureLabel.textContent = signature;
-      };
-
-        const echoButton = this.shadowRoot.getElementById('Echo');
-        echoButton.addEventListener('click', async () => {
-            await SafeSDK.echo({
-                value: 'Hello, world!',
-            });
-        });
+      }
 
       const enableLoggingButton = this.shadowRoot.getElementById('EnableLogging');
       enableLoggingButton.addEventListener('click', async () => {
@@ -136,7 +127,7 @@ window.customElements.define(
       disableLoggingButton.addEventListener('click', async () => {
         SafeSDK.enableLogging({ debugLoggingEnabled: false });
       });
-      
+
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
         try {
@@ -211,10 +202,15 @@ window.customElements.define(
       const subscribeButton = this.shadowRoot.getElementById('Subscribe');
       subscribeButton.addEventListener('click', async () => {
         try {
-          const { action } = await SafeSDK.subscribe();
-          console.log('Subscribe action:', action.type, action.signature);
+          if (!actionListener) {
+            actionListener = await SafeSDK.addListener('receivedAction', (action) => {
+              updateLabel(action.type, action.signature);
+            });
+          }
+          await SafeSDK.subscribe();
         } catch (err) {
           console.error('SafeSDK.subscribe failed', err);
+          updateLabel(err.message, '-');
         }
       });
       const checkButton = this.shadowRoot.getElementById('Check Now');
@@ -225,16 +221,20 @@ window.customElements.define(
           updateLabel(action.type, action.signature);
         } catch (err) {
           console.error('SafeSDK.check failed', err);
-          updateLabel(err.message, "-");
+          updateLabel(err.message, '-');
         }
       });
       const unsubscribeButton = this.shadowRoot.getElementById('Unsubscribe');
       unsubscribeButton.addEventListener('click', async () => {
         try {
           await SafeSDK.unsubscribe();
+          if (actionListener) {
+            await actionListener.remove();
+            actionListener = null;
+          }
           console.log('SafeSDK.unsubscribe is done!');
         } catch (err) {
-          console.error('SafeSDK.subscribe failed', err);
+          console.error('SafeSDK.unsubscribe failed', err);
         }
       });
     }

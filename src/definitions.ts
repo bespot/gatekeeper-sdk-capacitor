@@ -1,6 +1,8 @@
+import type { PluginListenerHandle } from '@capacitor/core';
+
 export interface SafeSDKPlugin {
   initialize(options: InitializeOptions): Promise<void>;
-  subscribe(): Promise<{ action: Action }>;
+  subscribe(): Promise<void>;
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
   enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>;
@@ -27,8 +29,15 @@ export interface Action {
 }
 
 export interface SafeSDKError {
-  code: SafeSDKErrorType; 
+  code: SafeSDKErrorType;
   message: string;
 }
 
-export type SafeSDKErrorType = 'NETWORK_CONNECTION' | 'NO_ACTIVE_API_KEY' | 'NO_CHECKS_AVAILABLE' | 'NO_RECIPE_FOUND' | 'NOT_INITIALIZED' | 'SERVER_ERROR' | 'UNKNOWN_ERROR';
+export type SafeSDKErrorType =
+  | 'NETWORK_CONNECTION'
+  | 'NO_ACTIVE_API_KEY'
+  | 'NO_CHECKS_AVAILABLE'
+  | 'NO_RECIPE_FOUND'
+  | 'NOT_INITIALIZED'
+  | 'SERVER_ERROR'
+  | 'UNKNOWN_ERROR';
