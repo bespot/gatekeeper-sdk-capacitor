@@ -78,6 +78,75 @@ Add the following to your app's `Info.plist`:
 <string>Your location is required for fraud-prevention analysis.</string>
 ```
 
+## Configuration
+
+### Using xcconfig files
+
+To securely store your API credentials, you can use Xcode configuration files (`.xcconfig`). This approach keeps sensitive information out of your source code.
+
+#### Step 1: Create Secrets.xcconfig
+
+Create a file named `Secrets.xcconfig` in your app's main directory:
+
+```
+API_BASE_URL = the_provided_API_BASE_URL
+API_KEY = the_provided_API_KEY
+AUTH_TOKEN_URL = the_provided_oauth2_URL
+CLIENT_ID = the_provided_oauth2_clientid
+CLIENT_SECRET = the_provided_oauth2_clientsecret
+```
+
+**Important:** Add `Secrets.xcconfig` to your `.gitignore` file to prevent committing sensitive credentials:
+
+```
+**/Secrets.xcconfig
+```
+
+#### Step 2: Add secrets to Info.plist
+
+Add the following keys to your `Info.plist` file. The variables will be replaced with values from your `Secrets.xcconfig` during build:
+
+```xml
+<key>API_BASE_URL</key>
+<string>$(API_BASE_URL)</string>
+<key>API_KEY</key>
+<string>$(API_KEY)</string>
+<key>AUTH_TOKEN_URL</key>
+<string>$(AUTH_TOKEN_URL)</string>
+<key>CLIENT_ID</key>
+<string>$(CLIENT_ID)</string>
+<key>CLIENT_SECRET</key>
+<string>$(CLIENT_SECRET)</string>
+```
+
+#### Step 3: Create configuration files
+
+Create two configuration files in your project root (e.g., `App-Debug.xcconfig` and `App-Release.xcconfig`):
+
+**App-Debug.xcconfig:**
+```
+#include "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"
+#include "App/Secrets.xcconfig"
+```
+
+**App-Release.xcconfig:**
+```
+#include "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"
+#include "App/Secrets.xcconfig"
+```
+
+**Note:** Adjust the path to `Secrets.xcconfig` based on your project structure.
+
+#### Step 4: Link configuration files in Xcode
+
+1. Open your project in Xcode
+2. Select your project in the Project Navigator
+3. Select your app project
+4. Go to the **Info** tab
+5. Under **Configurations**, set:
+   - **Debug**: `App-Debug.xcconfig`
+   - **Release**: `App-Release.xcconfig`
+
 ## Import
 
 ```ts
@@ -214,16 +283,14 @@ await SafeSDK.askForMediaAudioPermissions();
 
 ### Initialize
 Use this function **only in iOS** in order for the SDK to be initialized. As of this plugin version, initialization in Android is done during application launch:
+
 ```ts
 await SafeSDK.initialize({
-  apiBaseUrl: "the_provided_API_base_URL",
-  apiKey: "the_provided_API_key",
-  authTokenUrl: "the_provided_oauth2_URL",
-  clientId: "the_provided_oauth2_clientid",
-  clientSecret: "the_provided_oauth2_clientsecret",
   params: { debugLoggingEnabled: true },
 });
 ```
+
+The plugin will automatically read the API credentials from your `Info.plist` (populated from `Secrets.xcconfig` during build).
 
 ### Identify user
 After initialization is completed, SafeSDK supports holding a customer/client related unique user identifier which can be provided at any time using the following method:
