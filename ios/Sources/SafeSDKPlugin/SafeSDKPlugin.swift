@@ -24,7 +24,7 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     private let implementation = SafeSDK()
 
     @objc func initialize(_ call: CAPPluginCall) {
-        guard let apiBaseUrl = call.getString("apiBaseUrl"), let apiKey = call.getString("apiKey"), let authTokenUrl = call.getString("authTokenUrl"), let clientId = call.getString("clientId"), let clientSecret = call.getString("clientSecret") else {
+        guard let apiBaseUrl = SecretsConfigHelper.getApiBaseUrl(), let apiKey = SecretsConfigHelper.getApiKey(), let authTokenUrl = SecretsConfigHelper.getAuthTokenUrl(), let clientId = SecretsConfigHelper.getClientId(), let clientSecret = SecretsConfigHelper.getClientSecret() else {
             call.reject("Missing required initialize parameters")
             return
         }
