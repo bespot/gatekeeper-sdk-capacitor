@@ -3,7 +3,7 @@ PODS:
   - Capacitor (7.0.0):
     - CapacitorCordova
   - CapacitorCordova (7.0.0)
-  - GatekeeperSdkCapacitor (1.1.1):
+  - GatekeeperSdkCapacitor (1.1.2):
     - AntifraudSDK (= 1.1.4)
     - Capacitor
 
@@ -33,8 +33,8 @@ SPEC CHECKSUMS:
   AntifraudSDK: b4cf79fcde6241524e46fc68d6f5b1a8bac5c4fa
   Capacitor: 82d1f3b4480d66b5996814f74500dcbc0908558c
   CapacitorCordova: 345f93b7edd121db98e4ec20ac94d6d7bcaf7e48
-  GatekeeperSdkCapacitor: f3b6b746b4d06fd920c3a85083bb1a3dbc1aac1c
+  GatekeeperSdkCapacitor: b92db9097ed773e95d7ebf5fffd178dd67bcea65
 
-PODFILE CHECKSUM: 999181cc48d4ba5a5cbbfc30242a909472069af0
+PODFILE CHECKSUM: 595706df6b7bf08b381872f2104859d7accedcec
 
 COCOAPODS: 1.16.2

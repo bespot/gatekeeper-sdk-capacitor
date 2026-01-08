@@ -1,3 +1,8 @@
+# v1.1.2 (2026-01-08)
+
+### Fixed
+- Used .xcconfig for loading secrets in iOS
+
 # v1.1.1 (2025-12-23)
 
 ### Fixed
