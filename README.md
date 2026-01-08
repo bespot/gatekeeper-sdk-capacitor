@@ -33,7 +33,7 @@ npx cap sync
 ## Requirements
 
 * iOS 15.0 or later
-* Built and tested using Xcode 16
+* Built and tested using Xcode 26
 
 ## Install with CocoaPods
 
@@ -50,7 +50,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
-  pod 'GatekeeperSdkCapacitor', :git => 'https://github.com/bespot/gatekeeper-sdk-capacitor', :tag => 'v1.1.1'
+  pod 'GatekeeperSdkCapacitor', :git => 'https://github.com/bespot/gatekeeper-sdk-capacitor', :tag => 'v1.1.2'
   pod 'AntifraudSDK', :git => 'https://github.com/bespot/antifraud-sdk-ios-release', :tag => '1.1.4'
 end
 
@@ -340,4 +340,4 @@ In case you need to contact us, drop us an email at: dev@bespot.com
 
 ## License
 
-© 2025 [Bespot](https://bespot.com/) Private Company. All rights reserved. See `LICENSE` for more information.
+© 2026 [Bespot](https://bespot.com/) Private Company. All rights reserved. See `LICENSE` for more information.

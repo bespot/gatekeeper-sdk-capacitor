@@ -1,6 +1,6 @@
 {
   "name": "gatekeeper-sdk-capacitor",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The Gatekeeper SDK plugin for Capacitor",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
