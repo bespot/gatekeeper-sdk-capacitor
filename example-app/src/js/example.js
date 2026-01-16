@@ -110,6 +110,7 @@ window.customElements.define(
 
     async connectedCallback() {
       let actionListener = null;
+      let errorListener = null;
       const actionLabel = this.shadowRoot.getElementById('ActionLabel');
       const signatureLabel = this.shadowRoot.getElementById('SignatureLabel');
 
@@ -202,10 +203,15 @@ window.customElements.define(
               updateLabel(action.type, action.signature);
             });
           }
+          if (!errorListener) {
+            errorListener = await SafeSDK.addListener('subscribeError', (error) => {
+              console.error('SafeSDK subscribe failed', error);
+              updateLabel(error.message, '-');
+            });
+          }
           await SafeSDK.subscribe();
         } catch (err) {
           console.error('SafeSDK.subscribe failed', err);
-          updateLabel(err.message, '-');
         }
       });
       const checkButton = this.shadowRoot.getElementById('Check Now');
@@ -226,6 +232,10 @@ window.customElements.define(
           if (actionListener) {
             await actionListener.remove();
             actionListener = null;
+          }
+          if (errorListener) {
+            await errorListener.remove();
+            errorListener = null;
           }
           console.log('SafeSDK.unsubscribe is done!');
         } catch (err) {

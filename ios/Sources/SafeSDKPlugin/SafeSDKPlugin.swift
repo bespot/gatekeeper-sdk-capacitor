@@ -46,8 +46,6 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func subscribe(_ call: CAPPluginCall) {
-        var hasResolved = false
-
         implementation.subscribe { result in
             switch result {
             case .success(let action):
@@ -56,19 +54,18 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
                     "signature": action.signature
                 ]
                 self.notifyListeners("receivedAction", data: actionDict)
-                if !hasResolved {
-                    call.resolve()
-                    hasResolved = true
-                }
+
             case .failure(let error):
-                if !hasResolved {
-                    let code = error.rawValue
-                    let message = "SafeSDK subscribe failed: \(code)"
-                    call.reject(message, code, nil)
-                    hasResolved = true
-                }
+                let code = self.mapError(error: error)
+                let errorDict: [String: Any] = [
+                    "code": code,
+                    "message": "SafeSDK subscribe failed: \(code)"
+                ]
+                self.notifyListeners("subscribeError", data: errorDict)
             }
         }
+
+        call.resolve()
     }
 
     @objc func check(_ call: CAPPluginCall) {
