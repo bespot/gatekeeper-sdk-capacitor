@@ -1,14 +1,14 @@
 PODS:
-  - AntifraudSDK (1.1.4)
+  - AntifraudSDK (1.2.0)
   - Capacitor (7.0.0):
     - CapacitorCordova
   - CapacitorCordova (7.0.0)
   - GatekeeperSdkCapacitor (1.1.2):
-    - AntifraudSDK (= 1.1.4)
+    - AntifraudSDK (= 1.2.0)
     - Capacitor
 
 DEPENDENCIES:
-  - AntifraudSDK (from `https://github.com/bespot/antifraud-sdk-ios-release`, tag `1.1.4`)
+  - AntifraudSDK (from `https://github.com/bespot/antifraud-sdk-ios-release`, tag `1.2.0-test`)
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - GatekeeperSdkCapacitor (from `../../../`)
@@ -16,7 +16,7 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   AntifraudSDK:
     :git: https://github.com/bespot/antifraud-sdk-ios-release
-    :tag: 1.1.4
+    :tag: 1.2.0-test
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
@@ -27,14 +27,14 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   AntifraudSDK:
     :git: https://github.com/bespot/antifraud-sdk-ios-release
-    :tag: 1.1.4
+    :tag: 1.2.0-test
 
 SPEC CHECKSUMS:
-  AntifraudSDK: b4cf79fcde6241524e46fc68d6f5b1a8bac5c4fa
+  AntifraudSDK: 5779df7bf7e9a775069b1acf4d5e0be92ff2b507
   Capacitor: 82d1f3b4480d66b5996814f74500dcbc0908558c
   CapacitorCordova: 345f93b7edd121db98e4ec20ac94d6d7bcaf7e48
-  GatekeeperSdkCapacitor: b92db9097ed773e95d7ebf5fffd178dd67bcea65
+  GatekeeperSdkCapacitor: 8ec5aff4377757c729e34d96535054da82bf9dc8
 
-PODFILE CHECKSUM: 595706df6b7bf08b381872f2104859d7accedcec
+PODFILE CHECKSUM: 402064e72b37cdeb3ae64ff0d4365c77befaf018
 
 COCOAPODS: 1.16.2

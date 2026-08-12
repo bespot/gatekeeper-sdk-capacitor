@@ -14,10 +14,12 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "SafeSDK"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "initializeWithAccessToken", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "subscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "unsubscribe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setUserId", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setAccessToken", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "askForLocationPermissions", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "enableLogging", returnType: CAPPluginReturnPromise)
     ]
@@ -38,6 +40,30 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
                 authTokenUrl: authTokenUrl,
                 clientId: clientId,
                 clientSecret: clientSecret,
+                params: params
+            )
+        }
+
+        call.resolve()
+    }
+
+    @objc func initializeWithAccessToken(_ call: CAPPluginCall) {
+        guard let apiBaseUrl = SecretsConfigHelper.getApiBaseUrl(), let apiKey = SecretsConfigHelper.getApiKey() else {
+            call.reject("Missing required initialize parameters")
+            return
+        }
+
+        let params = call.getObject("params") as? [String: Any]
+        guard let accessToken = call.getString("accessToken"), !accessToken.isEmpty else {
+            call.reject("Missing required accessToken parameter")
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.implementation.initialize(
+                apiBaseUrl: apiBaseUrl,
+                apiKey: apiKey,
+                accessToken: accessToken,
                 params: params
             )
         }
@@ -99,6 +125,15 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
+    @objc func setAccessToken(_ call: CAPPluginCall) {
+        guard let accessToken = call.getString("accessToken") else {
+            call.reject("Missing required accessToken parameter")
+            return
+        }
+        implementation.setAccessToken(accessToken)
+        call.resolve()
+    }
+
     @objc func askForLocationPermissions(_ call: CAPPluginCall) {
         self.locationManager.requestWhenInUseAuthorization()
         call.resolve()
@@ -141,6 +176,12 @@ public class SafeSDKPlugin: CAPPlugin, CAPBridgedPlugin {
             return "SERVER_ERROR"
         case .unknownError:
             return "UNKNOWN_ERROR"
+        case .invalidToken:
+            return "INVALID_TOKEN"
+        case .authError:
+            return "AUTH_ERROR"
+        case .alreadyInitialized:
+            return "ALREADY_INITIALIZED"
         @unknown default:
             return "DEFAULT_UNKNOWN_ERROR"
         }

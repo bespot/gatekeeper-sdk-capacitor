@@ -39,6 +39,28 @@ window.customElements.define(
         text-decoration: none;
         cursor: pointer;
       }
+      .button:disabled {
+        background-color: #B0B0B0 !important;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+      .text-field:disabled {
+        background-color: #EEEEEE;
+        color: #999;
+        cursor: not-allowed;
+      }
+      .text-field {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 8px;
+        font-family: inherit;
+        font-size: 0.9em;
+        color: #333;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
       main {
         padding: 15px;
       }
@@ -75,6 +97,13 @@ window.customElements.define(
           <button class="button" id="DisableLogging" style="background-color: #FA120A; color: white;">Disable Logging</button>
         </div>
         <p>
+          <input class="text-field" id="AccessTokenField" type="text" placeholder="Enter access token here" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <button class="button" id="Initialize with Access Token" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize with Access Token</button>
+        </p>
+        <p>
+          <button class="button" id="UpdateAccessToken" style="background-color: #17A2B8; color: white; display: block; width: 100%" disabled>Update Access Token</button>
+        </p>
+        <p>
           <button class="button" id="Initialize" style="background-color: #007BFF; color: white; display: block; width: 100%">Initialize</button>
         </p>
         <p>
@@ -82,7 +111,7 @@ window.customElements.define(
         </p>
         <div class="buttons-row">
           <button class="button" id="Subscribe" style="background-color: #28A745; color: white;">Subscribe</button>
-          <button class="button" id="Unsubscribe" style="background-color: #FA120A; color: white;">Unsubscribe</button>
+          <button class="button" id="Unsubscribe" style="background-color: #FA120A; color: white;" disabled>Unsubscribe</button>
         </div>
         <p>
         <div class="buttons-row">
@@ -119,6 +148,17 @@ window.customElements.define(
         signatureLabel.textContent = signature;
       }
 
+      function disableElements(...elements) {
+        elements.forEach((element) => {
+          element.disabled = true;
+        });
+      }
+
+      function setSubscribedState(isSubscribed) {
+        subscribeButton.disabled = isSubscribed;
+        unsubscribeButton.disabled = !isSubscribed;
+      }
+
       const enableLoggingButton = this.shadowRoot.getElementById('EnableLogging');
       enableLoggingButton.addEventListener('click', async () => {
         SafeSDK.enableLogging({ debugLoggingEnabled: true });
@@ -129,15 +169,52 @@ window.customElements.define(
         SafeSDK.enableLogging({ debugLoggingEnabled: false });
       });
 
+      const accessTokenField = this.shadowRoot.getElementById('AccessTokenField');
+      const initializeWithAccessTokenButton = this.shadowRoot.getElementById('Initialize with Access Token');
+
+      initializeWithAccessTokenButton.addEventListener('click', async () => {
+        updateLabel('No action result yet', '-');
+        const accessToken = accessTokenField.value.trim();
+        try {
+          await SafeSDK.initializeWithAccessToken({
+            accessToken,
+            params: { debugLoggingEnabled: true },
+          });
+          disableElements(initializeButton, initializeWithAccessTokenButton);
+          updateAccessTokenButton.disabled = false;
+          console.log('Initialized with access token done');
+        } catch (err) {
+          console.error('SafeSDK.initializeWithAccessToken failed', err);
+          updateLabel(err.message, '-');
+        }
+      });
+
+      const updateAccessTokenButton = this.shadowRoot.getElementById('UpdateAccessToken');
+
+      updateAccessTokenButton.addEventListener('click', async () => {
+        const accessToken = accessTokenField.value.trim();
+        try {
+          await SafeSDK.setAccessToken({ accessToken });
+          updateLabel('Access token updated', '-');
+          console.log('Access token updated');
+        } catch (err) {
+          console.error('SafeSDK.setAccessToken failed', err);
+          updateLabel(err.message, '-');
+        }
+      });
+
       const initializeButton = this.shadowRoot.getElementById('Initialize');
       initializeButton.addEventListener('click', async () => {
+        updateLabel('No action result yet', '-');
         try {
           await SafeSDK.initialize({
             params: { debugLoggingEnabled: true },
           });
+          disableElements(initializeWithAccessTokenButton, initializeButton, accessTokenField, updateAccessTokenButton);
           console.log('Initialized done');
         } catch (err) {
           console.error('SafeSDK.initialize failed', err);
+          updateLabel(err.message, '-');
         }
       });
 
@@ -207,9 +284,11 @@ window.customElements.define(
             errorListener = await SafeSDK.addListener('subscribeError', (error) => {
               console.error('SafeSDK subscribe failed', error);
               updateLabel(error.message, '-');
+              setSubscribedState(false);
             });
           }
           await SafeSDK.subscribe();
+          setSubscribedState(true);
         } catch (err) {
           console.error('SafeSDK.subscribe failed', err);
         }
@@ -237,6 +316,7 @@ window.customElements.define(
             await errorListener.remove();
             errorListener = null;
           }
+          setSubscribedState(false);
           console.log('SafeSDK.unsubscribe is done!');
         } catch (err) {
           console.error('SafeSDK.unsubscribe failed', err);

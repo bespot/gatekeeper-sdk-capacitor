@@ -1,3 +1,10 @@
+# v1.2.0 (2026-08-12)
+
+### Added
+- `initializeWithAccessToken` access token authentication as an alternative to OAuth2.
+- `setAccessToken` refresh the access token.
+- `INVALID_TOKEN`, `AUTH_ERROR`, `ALREADY_INITIALIZED` error codes to `SafeSDKErrorType`
+
 # v1.1.2 (2026-01-08)
 
 ### Fixed
