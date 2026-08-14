@@ -14,10 +14,10 @@ See our [documentation](https://gatekeeper.docs.bespot.com/overview/features/) f
 
 To install the `gatekeeper-sdk-capacitor` plugin in your Ionic/JavaScript project do the following:
 
-1. From the root of your Ionic/Javascript app run:
+1. From the root of your Ionic/Javascript app run: To pin to a specific version, append the tag (see [Releases](https://github.com/bespot/gatekeeper-sdk-capacitor/tags) for available versions):
 
 ```bash
-npm install git+https://github.com/bespot/gatekeeper-sdk-capacitor.git
+npm install git+https://github.com/bespot/gatekeeper-sdk-capacitor.git#<version>
 ```
 
 2. Sync Capacitor:
@@ -37,7 +37,15 @@ npx cap sync
 
 ## Install with CocoaPods
 
-1. From your app root, edit the `Podfile` so it contains the `GatekeeperSdkCapacitor` and the `AntifraudSDK` pods as follows:
+1. Add the iOS platform, if you have not already:
+
+   ```bash
+   npx cap add ios
+   ```
+
+   This is the default — running `npx cap add ios` without any flag creates `ios/App` with a `Podfile`.
+
+2. From your app root, edit the `Podfile` so it contains the `GatekeeperSdkCapacitor` and the `AntifraudSDK` pods as follows:
 
 ```ruby
 require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
@@ -63,11 +71,35 @@ post_install do |installer|
 end
 ```
 
-2. Run:
+3. Run:
 
 ```bash
 pod install
 ```
+
+## Install with Swift Package Manager
+
+### New iOS platform
+
+If you have not added the iOS platform to your app yet, create it with Swift Package Manager directly:
+
+```bash
+npx cap add ios --packagemanager SPM
+```
+
+### Existing iOS platform (set up with CocoaPods)
+
+This is the case if you already ran `npx cap add ios` without the `--packagemanager SPM` flag — your `ios/App` folder has a `Podfile`, `Podfile.lock`, and `App.xcworkspace`. Capacitor ships an assistant that removes CocoaPods from your iOS project and switches it to Swift Package Manager:
+
+```bash
+npx cap spm-migration-assistant
+```
+
+The command prints a few remaining manual steps to complete in Xcode — follow the [official Capacitor SPM migration guide](https://capacitorjs.com/docs/ios/spm#using-our-migration-tool) to finish them.
+
+### iOS deployment target
+
+Your iOS platform's deployment target must be at least what `GatekeeperSdkCapacitor` requires (see [Requirements](#requirements)). Swift Package Manager enforces this strictly and fails to build if it is not high enough. To check or raise it: in Xcode, select the **App** project in the navigator → **Build Settings** → search for `iOS Deployment Target` → set it to at least `15.0` for both the **PROJECT** and the **App** target. Then run `npx cap sync ios` again.
 
 ## Permissions
 
@@ -91,7 +123,7 @@ As of v1.2.0 the SDK supports two mutually exclusive ways to authenticate:
 | `CLIENT_SECRET` | required | not used |
 | Access token | — | supplied at runtime by your app |
 
-Pick one per app. In the bearer-token flow your backend issues a short-lived JWT that your app passes to the SDK, and refreshes with `setAccessToken()` before it expires. No client secret is embedded in the app.
+Pick one per app. In the bearer-token flow your backend acquires the short-lived JWT from the Gatekeeper authentication backend and returning it back to your app which passes it to the SDK, and refreshes with `setAccessToken()` before it expires. No client secret is embedded in the app.
 
 ## Configuration
 
@@ -138,6 +170,8 @@ Add the following keys to your `Info.plist` file. The variables will be replaced
 
 #### Step 3: Create configuration files
 
+**1. If you installed with CocoaPods:**
+
 Create two configuration files in your project root (e.g., `App-Debug.xcconfig` and `App-Release.xcconfig`):
 
 **App-Debug.xcconfig:**
@@ -152,9 +186,20 @@ Create two configuration files in your project root (e.g., `App-Debug.xcconfig` 
 #include "App/Secrets.xcconfig"
 ```
 
-**Note:** Adjust the path to `Secrets.xcconfig` based on your project structure.
+The first line in each file includes CocoaPods' own generated configuration and only exists once you have run `pod install`.
+
+**2. If you installed with Swift Package Manager:**
+
+Your iOS platform already has a single `ios/debug.xcconfig`, created by Capacitor and used for both the Debug and Release build configurations. Add the include to that existing file instead of creating new ones:
+
+```
+CAPACITOR_DEBUG = true
+#include "App/Secrets.xcconfig"
+```
+**Note (both):** Adjust the path to `Secrets.xcconfig` based on where you placed it relative to the `.xcconfig` file you are editing.
 
 #### Step 4: Link configuration files in Xcode
+This step applies only if you installed with CocoaPods — Swift Package Manager projects already have `debug.xcconfig` linked to both build configurations, so there is nothing to do here.
 
 1. Open your project in Xcode
 2. Select your project in the Project Navigator
