@@ -1,3 +1,16 @@
+# v1.2.0 (2026-08-26)
+
+### Added
+- `initializeWithAccessToken` access token authentication as an alternative to OAuth2.
+- `setAccessToken` refresh the access token.
+- `INVALID_TOKEN`, `AUTH_ERROR`, `ALREADY_INITIALIZED` error codes to `SafeSDKErrorType`
+- Swift Package Manager installation support.
+
+### Changed
+- `InitializeOptions` and `InitializeWithAccessTokenOptions` no longer accept `apiBaseUrl`, `apiKey`, `authTokenUrl`, `clientId` or `clientSecret`. 
+These have been ignored since v1.1.2 — credentials are read natively from `Info.plist` (iOS) and string resources (Android).
+- Minimum iOS deployment target raised to 15.0.
+
 # v1.1.2 (2026-01-08)
 
 ### Fixed

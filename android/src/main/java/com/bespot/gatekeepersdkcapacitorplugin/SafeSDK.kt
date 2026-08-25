@@ -49,6 +49,13 @@ class SafeSDK: FraudulentCheckObserver {
         })
     }
 
+    fun initializeWithAccessToken(apiBaseUrl: String, apiKey: String, accessToken: String) {
+        safeSdk.initWithAccessToken(apiBaseUrl, apiKey, accessToken)
+    }
+
+    fun setAccessToken(value: String) {
+        safeSdk.setAccessToken(value)
+    }
 
     fun setUserId(value: String) {
         safeSdk.setUserID(value)

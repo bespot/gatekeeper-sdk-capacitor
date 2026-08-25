@@ -238,7 +238,21 @@ dependencyResolutionManagement {
 }
 ```
 
-### Configuration values
+## Authentication modes
+
+The Android SDK starts itself automatically at application launch, through a `ContentProvider`, before your `Application.onCreate()` runs. Which authentication mode it uses is decided entirely by **which string resources you declare** — there is no runtime switch.
+
+| | OAuth 2.0 | Bearer token |
+|---|---|---|
+| `antifraud_sdk_key` | required | required |
+| `antifraud_sdk_api_url` | required | required |
+| `antifraud_sdk_client_id` | required | empty |
+| `antifraud_sdk_client_secret` | required | empty |
+| `antifraud_sdk_oauth2_token_url` | required | empty |
+
+The three OAuth 2.0 resources are evaluated as a group. If **all three** are missing or blank, the SDK skips its network initialization at launch and waits for an access token. If **any** of them holds a value, the SDK initializes in OAuth 2.0 mode at launch.
+
+### Configuration values - OAuth 2.0 mode
 
 Provide the required credentials either via `resValue` entries in `android/app/build.gradle`:
 
@@ -259,6 +273,24 @@ or directly in `strings.xml`:
 <string name="antifraud_sdk_client_secret">YOUR_CLIENT_SECRET</string>
 <string name="antifraud_sdk_oauth2_token_url">OAUTH2_TOKEN_URL</string>
 ```
+
+### Configuration values - bearer-token mode
+
+Declare only the two required resources:
+
+```kotlin
+resValue("string", "antifraud_sdk_key", YOUR_API_KEY)
+resValue("string", "antifraud_sdk_api_url", API_URL)
+```
+
+or in `strings.xml`:
+
+```xml
+<string name="antifraud_sdk_key">YOUR_API_KEY</string>
+<string name="antifraud_sdk_api_url">API_URL</string>
+```
+
+Declare the three OAuth 2.0 resources with empty values. Then call `initializeWithAccessToken()` from your app — see [Initialize with an access token](#initialize-with-an-access-token).
 
 Optionally, use local and not version controlled `local.properties` to set the above vars.
 
@@ -293,13 +325,13 @@ import { SafeSDK } from 'gatekeeper-sdk-capacitor';
 * `askForLocationPermissions(): Promise<void>` *(Android & iOS)*
 * `askForStoragePermissions(): Promise<void>` *(Android only)*
 * `askForMediaAudioPermissions(): Promise<void>` *(Android only)*
-* `initialize(options: InitializeOptions): Promise<void>` *(required on iOS for OAuth 2.0 authentication)*
-* `initializeWithAccessToken(options: InitializeWithAccessTokenOptions): Promise<void>` *(required on iOS for bearer token authentication)*
-* `setAccessToken(options: { accessToken: string }): Promise<void>` *(iOS only)*
+* `initialize(options: InitializeOptions): Promise<void>` *(iOS only — on Android, OAuth 2.0 initialization happens automatically at app launch)*
+* `initializeWithAccessToken(options: InitializeWithAccessTokenOptions): Promise<void>` *(Android & iOS — required in bearer-token mode)*
+* `setAccessToken(options: { accessToken: string }): Promise<void>` *(Android & iOS)*
 * `setUserId(options: { userId: string }): Promise<void>` *(optional)*
 * `check(): Promise<{ action: Action }>` *(on-demand checks)*
-* `subscribe(): Promise<void>` *(periodic checks)*
-* `unsubscribe(): Promise<void>` *(stop periodic checks)*
+* `subscribe(): Promise<void>` *(periodic checks — currently iOS only)*
+* `unsubscribe(): Promise<void>` *(stop periodic checks — currently iOS only)*
 * `enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>` *(Android only - optional)*
 
 ## Events
@@ -314,23 +346,20 @@ Emitted while a subscription is active. See [Subscribe](#subscribe).
 ## Models
 
 ```ts
-// Initialization with OAuth 2.0 credentials
+// Initialization with OAuth 2.0 credentials.
+// The credentials themselves are read by the native layer — from Info.plist on
+// iOS, from string resources on Android — and are never passed from JavaScript.
 export interface InitializeOptions {
-  apiBaseUrl: string;
-  apiKey: string;
-  authTokenUrl: string;
-  clientId: string;
-  clientSecret: string;
   params?: { [key: string]: any };
 }
 
 // Initialization with a bearer token
+// `apiBaseUrl` and `apiKey` are likewise read by the native layer.
 export interface InitializeWithAccessTokenOptions {
-  apiBaseUrl: string;
-  apiKey: string;
   accessToken: string;
   params?: { [key: string]: any };
 }
+
 // Action result object
 export interface Action {
   type: ActionType;
@@ -375,7 +404,7 @@ await SafeSDK.askForMediaAudioPermissions();
 ```
 
 ### Initialize
-Use this function **only in iOS** in order for the SDK to be initialized. As of this plugin version, initialization in Android is done during application launch:
+Use this method on iOS to initialize the SDK in OAuth 2.0 mode. On Android it is not needed — OAuth 2.0 initialization happens automatically during application launch:
 
 ```ts
 await SafeSDK.initialize({
@@ -383,10 +412,13 @@ await SafeSDK.initialize({
 });
 ```
 
-The plugin will automatically read the API credentials from your `Info.plist` (populated from `Secrets.xcconfig` during build).
+The credentials themselves are never passed from JavaScript. Each platform reads them natively:
+
+* **iOS** — the `API_BASE_URL`, `API_KEY`, `AUTH_TOKEN_URL`, `CLIENT_ID` and `CLIENT_SECRET` keys of `Info.plist`, populated from `Secrets.xcconfig` at build time.
+* **Android** — the five `antifraud_sdk_*` string resources, read by the SDK itself at launch. That is precisely why no `initialize()` call is needed there.
 
 ### Initialize with an access token
-*(iOS only)* Alternative to OAuth 2.0. Pass a bearer token issued by your own backend:
+*(Android & iOS)* Alternative to OAuth 2.0. Pass a bearer token issued by your own backend:
 
 ```ts
 await SafeSDK.initializeWithAccessToken({
@@ -395,12 +427,12 @@ await SafeSDK.initializeWithAccessToken({
 });
 ```
 
-`API_BASE_URL` and `API_KEY` are still read from your `Info.plist`; the OAuth 2.0 entries are not used.
+`API_BASE_URL` and `API_KEY` are still read from your `Info.plist`; the OAuth 2.0 entries are not used. On Android this call is only valid when the three OAuth 2.0 resources are absent or blank; see [Authentication modes](#authentication-modes-1).
 
 > **Important:** Call `initialize()` **or** `initializeWithAccessToken()`, once per application launch.
 
 ### Refresh the access token
-*(iOS only)* Bearer tokens are short-lived. Supply a fresh one before the current token expires — the SDK keeps running with the new token, no re-initialization needed:
+*(Android & iOS)* Bearer tokens are short-lived. Supply a fresh one before the current token expires — the SDK keeps running with the new token, no re-initialization needed:
 
 ```ts
 await SafeSDK.setAccessToken({ accessToken });

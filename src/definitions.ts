@@ -1,7 +1,7 @@
 import type { PluginListenerHandle } from '@capacitor/core';
 
 export interface SafeSDKPlugin {
-  initialize(options: InitializeOptions): Promise<void>;
+  initialize(options?: InitializeOptions): Promise<void>;
   initializeWithAccessToken(options: InitializeWithAccessTokenOptions): Promise<void>;
   subscribe(): Promise<void>;
   check(): Promise<{ action: Action }>;
@@ -17,17 +17,10 @@ export interface SafeSDKPlugin {
 }
 
 export interface InitializeOptions {
-  apiBaseUrl: string;
-  apiKey: string;
-  authTokenUrl: string;
-  clientId: string;
-  clientSecret: string;
   params?: { [key: string]: any };
 }
 
 export interface InitializeWithAccessTokenOptions {
-  apiBaseUrl: string;
-  apiKey: string;
   accessToken: string;
   params?: { [key: string]: any };
 }
