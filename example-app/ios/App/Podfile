@@ -13,7 +13,7 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
   #pod 'GatekeeperSdkCapacitor', :git => 'https://github.com/bespot/gatekeeper-sdk-capacitor', :tag => 'v1.1.2'
   pod 'GatekeeperSdkCapacitor', :path => '../../../'
-  pod 'AntifraudSDK', :git => 'https://github.com/bespot/antifraud-sdk-ios-release', :tag => '1.1.4'
+  pod 'AntifraudSDK', :git => 'https://github.com/bespot/antifraud-sdk-ios-release', :tag => '1.2.0'
 end
 
 target 'App' do

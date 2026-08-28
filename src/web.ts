@@ -1,10 +1,13 @@
-import { WebPlugin, PluginListenerHandle } from '@capacitor/core';
+import { WebPlugin } from '@capacitor/core';
 
-import type { InitializeOptions, SafeSDKPlugin, Action } from './definitions';
+import type { InitializeOptions, SafeSDKPlugin, Action, InitializeWithAccessTokenOptions } from './definitions';
 
 export class SafeSDKWeb extends WebPlugin implements SafeSDKPlugin {
   async initialize(options: InitializeOptions): Promise<void> {
     console.warn('SafeSDK.initialize is not implemented on web', options);
+  }
+  async initializeWithAccessToken(options: InitializeWithAccessTokenOptions): Promise<void> {
+    console.warn('SafeSDK.initialize with access token is not implemented on web', options);
   }
   async subscribe(): Promise<void> {
     console.warn('Safesdk.subscribe is not implemented on web');
@@ -20,7 +23,19 @@ export class SafeSDKWeb extends WebPlugin implements SafeSDKPlugin {
   async setUserId(options: { userId: string }): Promise<void> {
     console.warn('SafeSDK.setUserId is not implemented on web', options);
   }
+  async setAccessToken(options: { accessToken: string }): Promise<void> {
+    console.warn('SafeSDK.setAccessToken is not implemented on web', options);
+  }
   async askForLocationPermissions(): Promise<void> {
     console.warn('SafeSDK.askForPermissions is not implemented on web');
+  }
+  async askForStoragePermissions(): Promise<void> {
+    console.warn('SafeSDK.askForStoragePermissions is not implemented on web');
+  }
+  async askForMediaAudioPermissions(): Promise<void> {
+    console.warn('SafeSDK.askForMediaAudioPermissions is not implemented on web');
+  }
+  async enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void> {
+    console.warn('SafeSDK.enableLogging is not implemented on web', options);
   }
 }

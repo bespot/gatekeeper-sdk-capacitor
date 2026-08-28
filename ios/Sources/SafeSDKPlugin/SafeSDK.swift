@@ -8,6 +8,10 @@ import AntifraudSDK
 
     }
 
+    @objc public func initialize(apiBaseUrl: String, apiKey: String, accessToken: String, params: [String: Any]? = nil) {
+        AntifraudSDK.SafeSDK.sharedSafeSDK.initialize(apiBaseUrl: apiBaseUrl, apiKey: apiKey, accessToken: accessToken, params: params)
+    }
+
     public func subscribe(_ completion: @escaping (Result<Action, SDKError>) -> Void) {
         AntifraudSDK.SafeSDK.sharedSafeSDK.subscribe { result in
             DispatchQueue.main.async {
@@ -30,5 +34,9 @@ import AntifraudSDK
 
     public func setUserId(_ userId: String) {
         AntifraudSDK.SafeSDK.sharedSafeSDK.setUserId(userId)
+    }
+
+    public func setAccessToken(_ accessToken: String) {
+        AntifraudSDK.SafeSDK.sharedSafeSDK.setAccessToken(accessToken)
     }
 }

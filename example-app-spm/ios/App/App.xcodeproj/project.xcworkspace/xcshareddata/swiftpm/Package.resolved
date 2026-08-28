@@ -1,0 +1,24 @@
+{
+  "originHash" : "680ea0576a6cee1527ec20ce2ed3dbec10a51910c8e125b108640ab3f8ac2d76",
+  "pins" : [
+    {
+      "identity" : "antifraud-sdk-ios-release",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bespot/antifraud-sdk-ios-release.git",
+      "state" : {
+        "revision" : "bc8ddab45da331fdca1cee49fb7727914c57793c",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "capacitor-swift-pm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/capacitor-swift-pm.git",
+      "state" : {
+        "revision" : "ef3cfccd708da835ba6393bd40c578d251d623c2",
+        "version" : "7.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

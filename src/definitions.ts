@@ -2,14 +2,18 @@ import type { PluginListenerHandle } from '@capacitor/core';
 
 export interface SafeSDKPlugin {
   initialize(options: InitializeOptions): Promise<void>;
+  initializeWithAccessToken(options: InitializeWithAccessTokenOptions): Promise<void>;
   subscribe(): Promise<void>;
   check(): Promise<{ action: Action }>;
   unsubscribe(): Promise<void>;
   enableLogging(options: { debugLoggingEnabled: boolean }): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
+  setAccessToken(options: { accessToken: string }): Promise<void>;
   askForLocationPermissions(): Promise<void>;
   askForStoragePermissions(): Promise<void>;
   askForMediaAudioPermissions(): Promise<void>;
+  addListener(eventName: 'receivedAction', listenerFunc: (action: Action) => void): Promise<PluginListenerHandle>;
+  addListener(eventName: 'subscribeError', listenerFunc: (error: SafeSDKError) => void): Promise<PluginListenerHandle>;
 }
 
 export interface InitializeOptions {
@@ -18,6 +22,13 @@ export interface InitializeOptions {
   authTokenUrl: string;
   clientId: string;
   clientSecret: string;
+  params?: { [key: string]: any };
+}
+
+export interface InitializeWithAccessTokenOptions {
+  apiBaseUrl: string;
+  apiKey: string;
+  accessToken: string;
   params?: { [key: string]: any };
 }
 
@@ -40,4 +51,7 @@ export type SafeSDKErrorType =
   | 'NO_RECIPE_FOUND'
   | 'NOT_INITIALIZED'
   | 'SERVER_ERROR'
-  | 'UNKNOWN_ERROR';
+  | 'UNKNOWN_ERROR'
+  | 'INVALID_TOKEN'
+  | 'AUTH_ERROR'
+  | 'ALREADY_INITIALIZED';
