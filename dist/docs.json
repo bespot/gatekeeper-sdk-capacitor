@@ -6,26 +6,385 @@
     "tags": [],
     "methods": [
       {
-        "name": "echo",
-        "signature": "(options: { value: string; }) => Promise<{ value: string; }>",
+        "name": "initialize",
+        "signature": "(options?: InitializeOptions | undefined) => Promise<void>",
         "parameters": [
           {
             "name": "options",
             "docs": "",
-            "type": "{ value: string; }"
+            "type": "InitializeOptions | undefined"
           }
         ],
-        "returns": "Promise<{ value: string; }>",
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "InitializeOptions"
+        ],
+        "slug": "initialize"
+      },
+      {
+        "name": "initializeWithAccessToken",
+        "signature": "(options: InitializeWithAccessTokenOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "InitializeWithAccessTokenOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "InitializeWithAccessTokenOptions"
+        ],
+        "slug": "initializewithaccesstoken"
+      },
+      {
+        "name": "subscribe",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
         "tags": [],
         "docs": "",
         "complexTypes": [],
-        "slug": "echo"
+        "slug": "subscribe"
+      },
+      {
+        "name": "check",
+        "signature": "() => Promise<{ action: Action; }>",
+        "parameters": [],
+        "returns": "Promise<{ action: Action; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "Action"
+        ],
+        "slug": "check"
+      },
+      {
+        "name": "unsubscribe",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "unsubscribe"
+      },
+      {
+        "name": "enableLogging",
+        "signature": "(options: { debugLoggingEnabled: boolean; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ debugLoggingEnabled: boolean; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "enablelogging"
+      },
+      {
+        "name": "setUserId",
+        "signature": "(options: { userId: string; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ userId: string; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "setuserid"
+      },
+      {
+        "name": "setAccessToken",
+        "signature": "(options: { accessToken: string; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ accessToken: string; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "setaccesstoken"
+      },
+      {
+        "name": "askForLocationPermissions",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "askforlocationpermissions"
+      },
+      {
+        "name": "askForStoragePermissions",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "askforstoragepermissions"
+      },
+      {
+        "name": "askForMediaAudioPermissions",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "askformediaaudiopermissions"
+      },
+      {
+        "name": "addListener",
+        "signature": "(eventName: 'receivedAction', listenerFunc: (action: Action) => void) => Promise<PluginListenerHandle>",
+        "parameters": [
+          {
+            "name": "eventName",
+            "docs": "",
+            "type": "'receivedAction'"
+          },
+          {
+            "name": "listenerFunc",
+            "docs": "",
+            "type": "(action: Action) => void"
+          }
+        ],
+        "returns": "Promise<PluginListenerHandle>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PluginListenerHandle",
+          "Action"
+        ],
+        "slug": "addlistenerreceivedaction-"
+      },
+      {
+        "name": "addListener",
+        "signature": "(eventName: 'subscribeError', listenerFunc: (error: SafeSDKError) => void) => Promise<PluginListenerHandle>",
+        "parameters": [
+          {
+            "name": "eventName",
+            "docs": "",
+            "type": "'subscribeError'"
+          },
+          {
+            "name": "listenerFunc",
+            "docs": "",
+            "type": "(error: SafeSDKError) => void"
+          }
+        ],
+        "returns": "Promise<PluginListenerHandle>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PluginListenerHandle",
+          "SafeSDKError"
+        ],
+        "slug": "addlistenersubscribeerror-"
       }
     ],
     "properties": []
   },
-  "interfaces": [],
+  "interfaces": [
+    {
+      "name": "InitializeOptions",
+      "slug": "initializeoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "params",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ [key: string]: any; } | undefined"
+        }
+      ]
+    },
+    {
+      "name": "InitializeWithAccessTokenOptions",
+      "slug": "initializewithaccesstokenoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "accessToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "params",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ [key: string]: any; } | undefined"
+        }
+      ]
+    },
+    {
+      "name": "Action",
+      "slug": "action",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "type",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "ActionType"
+          ],
+          "type": "ActionType"
+        },
+        {
+          "name": "signature",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "PluginListenerHandle",
+      "slug": "pluginlistenerhandle",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "remove",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "() => Promise<void>"
+        }
+      ]
+    },
+    {
+      "name": "SafeSDKError",
+      "slug": "safesdkerror",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "code",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "SafeSDKErrorType"
+          ],
+          "type": "SafeSDKErrorType"
+        },
+        {
+          "name": "message",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    }
+  ],
   "enums": [],
-  "typeAliases": [],
+  "typeAliases": [
+    {
+      "name": "ActionType",
+      "slug": "actiontype",
+      "docs": "",
+      "types": [
+        {
+          "text": "'BLOCK'",
+          "complexTypes": []
+        },
+        {
+          "text": "'LIMIT_ACCESS'",
+          "complexTypes": []
+        },
+        {
+          "text": "'MONITOR'",
+          "complexTypes": []
+        },
+        {
+          "text": "'NOT_SAFE'",
+          "complexTypes": []
+        },
+        {
+          "text": "'SAFE'",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "SafeSDKErrorType",
+      "slug": "safesdkerrortype",
+      "docs": "",
+      "types": [
+        {
+          "text": "'NETWORK_CONNECTION'",
+          "complexTypes": []
+        },
+        {
+          "text": "'NO_ACTIVE_API_KEY'",
+          "complexTypes": []
+        },
+        {
+          "text": "'NO_CHECKS_AVAILABLE'",
+          "complexTypes": []
+        },
+        {
+          "text": "'NO_RECIPE_FOUND'",
+          "complexTypes": []
+        },
+        {
+          "text": "'NOT_INITIALIZED'",
+          "complexTypes": []
+        },
+        {
+          "text": "'SERVER_ERROR'",
+          "complexTypes": []
+        },
+        {
+          "text": "'UNKNOWN_ERROR'",
+          "complexTypes": []
+        },
+        {
+          "text": "'INVALID_TOKEN'",
+          "complexTypes": []
+        },
+        {
+          "text": "'AUTH_ERROR'",
+          "complexTypes": []
+        },
+        {
+          "text": "'ALREADY_INITIALIZED'",
+          "complexTypes": []
+        }
+      ]
+    }
+  ],
   "pluginConfigs": []
 }
